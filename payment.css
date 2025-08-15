@@ -1,0 +1,243 @@
+/* ===== Base ===== */
+:root{
+  --bg: #0b121a;
+  --card: rgba(255,255,255,.06);
+  --glass: rgba(255,255,255,.08);
+  --text: #e6eef7;
+  --muted: #94a3b8;
+  --brand: #7c5cff;
+  --brand-2: #00e0b8;
+  --accent: #ffd166;
+  --danger: #ef4444;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin:0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(124,92,255,.25), transparent 60%),
+              radial-gradient(800px 400px at 10% 10%, rgba(0,224,184,.18), transparent 60%),
+              var(--bg);
+  line-height: 1.6;
+}
+
+.container{ width: min(1120px, 92%); margin: 0 auto; }
+
+/* ===== Header ===== */
+.header{ position: sticky; top:0; z-index:50; background: var(--bg); padding:.75rem 0; }
+.brand{ display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--text); }
+.brand-logo{
+  width:36px; height:36px; display:grid; place-items:center; font-weight:700;
+  background: radial-gradient(120% 100% at 30% 20%, var(--brand), var(--brand-2));
+  color:#0b0f14; border-radius:12px;
+}
+.brand-name{ font-weight:700; font-size:1.1rem; letter-spacing:.3px; }
+
+/* ===== Grid สินค้า ===== */
+#cart-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cart-item{
+  display:flex;
+  flex-direction:column;
+  justify-content: space-between;
+  background: var(--card);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius);
+  overflow:hidden;
+  min-height:280px;
+  padding:.6rem;
+}
+
+.cart-item img{
+  width:100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius:12px;
+  margin-bottom:.6rem;
+}
+
+.cart-title{ font-weight:600; margin-bottom:.3rem; }
+.cart-price{ font-weight:700; }
+
+/* ===== ช่องทางชำระเงิน ===== */
+.method-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap:1rem;
+  margin-bottom:1.5rem;
+}
+
+.method-card{
+  padding:1rem;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.03));
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow);
+  transition: transform .2s, box-shadow .2s;
+}
+.method-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+}
+
+.method-header{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  margin-bottom:.6rem;
+}
+
+.copy-btn{
+  background: var(--card);
+  border:1px solid rgba(255,255,255,.12);
+  padding:.4rem .6rem;
+  border-radius:12px;
+  cursor:pointer;
+  transition: background .2s;
+}
+.copy-btn:hover{ background: rgba(255,255,255,.12); }
+
+.method-body .method-key{
+  font-weight:600;
+  margin-bottom:.2rem;
+}
+.mono{ font-family: monospace; }
+.small{ font-size: .85rem; }
+.muted{ color: var(--muted); }
+
+/* ===== Notice ===== */
+.notice{
+  padding:.8rem 1rem;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color:#0b0f14;
+  font-weight:600;
+  border-radius: var(--radius);
+  margin-top:1rem;
+  text-align:center;
+}
+
+/* ===== ฟอร์มชำระเงิน ===== */
+.form-card{
+  display:flex;
+  flex-direction: column;
+  gap:1rem;
+  margin-top:2rem;
+  padding:1rem 1.2rem;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.03));
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow);
+}
+
+.form-group label{
+  display:flex;
+  flex-direction:column;
+  font-weight:500;
+  font-size:0.9rem;
+}
+.form-group input{
+  margin-top:0.3rem;
+  padding:.6rem .8rem;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  outline:none;
+  transition: border .2s, background .2s;
+}
+.form-group input:focus{
+  border:1px solid var(--brand);
+  background: rgba(124,92,255,.1);
+}
+
+/* ===== Cart Foot / Buttons ===== */
+.cart-foot{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content: space-between;
+  gap:.5rem;
+  margin-top:1rem;
+}
+
+.cart-total{ font-weight:700; font-size:1.05rem; }
+
+.actions{
+  display:flex;
+  gap:.6rem;
+  flex-wrap:wrap;
+}
+
+.actions .btn{
+  flex:1;
+  min-width:120px;
+}
+
+/* ===== Buttons ===== */
+.btn{
+  border:1px solid rgba(255,255,255,.12);
+  background: var(--card);
+  padding:.6rem 1rem;
+  border-radius:12px;
+  font-weight:600;
+  color:var(--text);
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform .05s ease, background .2s, color .2s;
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn.primary{ background: linear-gradient(90deg, var(--brand), var(--brand-2)); color:#0b0f14; border:none; }
+.btn.outline{ background: transparent; border:1px solid rgba(255,255,255,.24); }
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  #cart-grid{ grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); }
+  .method-list{ grid-template-columns: 1fr; }
+  .cart-foot{ flex-direction: column; align-items: stretch; }
+  .actions .btn{ width:100%; }
+}
+
+.toast{
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.toast.hidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toast.success{
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color: #0b0f14;
+}
+
+.toast.error{
+  background: var(--danger);
+  color: #fff;
+}

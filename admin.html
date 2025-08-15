@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixora — Admin Orders</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header glass">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-logo">P</span>
+        <span class="brand-name">Pixora Admin</span>
+      </a>
+      <div class="auth">
+        <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <section class="section">
+    <div class="container">
+      <h2>คำสั่งซื้อรออนุมัติ</h2>
+      <p>ตรวจสอบคำสั่งซื้อและอนุมัติหรือปฏิเสธคำสั่งซื้อของลูกค้า</p>
+    </div>
+  </section>
+
+  <!-- Orders List -->
+  <section class="section">
+    <div class="container" id="orders-container">
+      <div class="grid" id="admin-orders-grid">
+        <!-- Card ของ order จะถูก generate ด้วย JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast / Notifications -->
+  <div id="toast" class="hidden"></div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixora — คำสั่งซื้อของฉัน</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header glass">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-logo">P</span>
+        <span class="brand-name">Pixora</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#gallery">แกลเลอรี</a>
+        <a href="index.html#pricing">แพ็กเกจ</a>
+        <a href="index.html#faq">คำถามที่พบบ่อย</a>
+      </nav>
+      <div class="auth">
+        <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <section class="section">
+    <div class="container">
+      <h2>คำสั่งซื้อของฉัน</h2>
+      <p>ตรวจสอบสถานะคำสั่งซื้อ และดาวน์โหลดไฟล์หลังชำระเงินเรียบร้อย</p>
+    </div>
+  </section>
+
+  <!-- Orders List -->
+  <section class="section">
+    <div class="container" id="orders-container">
+      <!-- Card ของ order จะถูก generate ด้วย JS -->
+      <div class="grid" id="orders-grid">
+        <!-- ตัวอย่าง order card -->
+        <!-- <div class="card glass">
+          <div class="meta">
+            <h3>ชื่อสินค้า</h3>
+            <p>ราคา: ฿100</p>
+            <p>สถานะ: ชำระเงินแล้ว</p>
+            <div class="buttons">
+              <a href="#" class="btn buy-now">ดาวน์โหลด</a>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="order.js"></script>
+</body>
+</html>
