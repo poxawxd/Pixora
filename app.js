@@ -264,36 +264,37 @@ btnLogout.addEventListener('click', async ()=>{
 });
 
 // ===== Auth State Observer =====
-onAuthStateChanged(auth,user=>{
-  state.user=user||null;
+onAuthStateChanged(auth, user => {
+  state.user = user || null;
+
   if(user){
     btnLogin.classList.add('hidden');
     btnRegister.classList.add('hidden');
     userMenu.classList.remove('hidden');
-    userName.textContent=user.displayName||user.email;
-    userAvatar.src=user.photoURL||`https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(user.email)}`;
+    userName.textContent = user.displayName || user.email;
+    userAvatar.src = user.photoURL || `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(user.email)}`;
     closeModal(loginModal);
     closeModal(registerModal);
 
     // แสดงปุ่ม Admin เฉพาะ UID
-    if(user.uid==='o5wUtjhCLQho3H1zQE3FgZgu3Q93'){
-      if(!adminBtn){
-        adminBtn = document.createElement('button');
-        adminBtn.id='btn-admin';
-        adminBtn.className='btn primary';
-        adminBtn.textContent='หน้า Admin';
-        document.querySelector('.nav').appendChild(adminBtn);
-        adminBtn.addEventListener('click', ()=>{ window.location.href='admin.html'; });
-      }
+    if(user.uid === 'o5wUtjhCLQho3H1zQE3FgZgu3Q93'){
       adminBtn.classList.remove('hidden');
-    }else{
-      if(adminBtn) adminBtn.classList.add('hidden');
+
+      // เพิ่ม listener แค่ครั้งเดียว
+      if(!adminBtn.dataset.listener){
+        adminBtn.addEventListener('click', () => {
+          window.location.href = 'admin.html';
+        });
+        adminBtn.dataset.listener = "true";
+      }
+    } else {
+      adminBtn.classList.add('hidden');
     }
 
-  }else{
+  } else {
     btnLogin.classList.remove('hidden');
     btnRegister.classList.remove('hidden');
     userMenu.classList.add('hidden');
-    if(adminBtn) adminBtn.classList.add('hidden');
+    adminBtn.classList.add('hidden');
   }
 });
