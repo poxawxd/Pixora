@@ -37,7 +37,10 @@
         <!-- User menu -->
         <div id="user-menu" class="user-menu hidden">
           <img id="user-avatar" class="avatar" alt="avatar" />
+          <div class="user-info">
           <span id="user-name" class="user-name"></span>
+          <span id="user-level" class="user-level muted"></span>
+          </div>
           <a href="order.html" class="btn primary" id="btn-my-orders">คำสั่งซื้อของฉัน</a>
           <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
         </div>
@@ -99,47 +102,47 @@
     </div>
   </section>
 
-  <!-- Pricing -->
-  <section id="pricing" class="section alt">
-    <div class="container">
-      <div class="section-head">
-        <h2>แพ็กเกจใบอนุญาต</h2>
-        <p>เลือกแพ็กเกจตามการใช้งานของคุณ ใบอนุญาตจะคงอยู่ตลอด</p>
+<!-- Pricing -->
+<section id="pricing" class="section alt">
+  <div class="container">
+    <div class="section-head">
+      <h2>แพ็กเกจใบอนุญาต</h2>
+      <p>เลือกแพ็กเกจตามการใช้งานของคุณ ใบอนุญาตจะคงอยู่ตลอด</p>
+    </div>
+    <div class="pricing">
+      <div class="price-card glass">
+        <h3>Standard</h3>
+        <p class="price">฿100</p>
+        <ul>
+          <li>ปลดล็อก Set พิเศษV1</li>
+          <li>สิทธิ์ใช้งานครบ</li>
+        </ul>
+        <button class="btn outline" data-package="Standard">เลือกแพ็กเกจ</button>
       </div>
-      <div class="pricing">
-        <div class="price-card glass">
-          <h3>Standard</h3>
-          <p class="price">฿100</p>
-          <ul>
-            <li>ปลดล็อก Set พิเศษV1</li>
-            <li>สิทธิ์ใช้งานครบ</li>
-          </ul>
-          <button class="btn outline">เลือกแพ็กเกจ</button>
-        </div>
-        <div class="price-card glass highlight">
-          <h3>SpecialList</h3>
-          <p class="price">฿500</p>
-          <ul>
-            <li>ปลดล็อก Set Secret</li>
-            <li>ฟรี Set พิเศษ ทุกเดือน</li>
-            <li>ไฟล์ต้นฉบับ</li>
-            <li>สิทธิ์ใช้งานครบ</li>
-          </ul>
-          <button class="btn primary">เลือกแพ็กเกจ</button>
-        </div>
-        <div class="price-card glass">
-          <h3>Enterprise</h3>
-          <p class="price">ติดต่อเรา</p>
-          <ul>
-            <li>สิทธิ์ใช้งานครบ</li>
-            <li>ที่ปรึกษาเฉพาะกิจ</li>
-            <li>ใบสัญญาแยก</li>
-          </ul>
-          <button class="btn outline">พูดคุยกับทีม</button>
-        </div>
+      <div class="price-card glass highlight">
+        <h3>SpecialList</h3>
+        <p class="price">฿500</p>
+        <ul>
+          <li>ปลดล็อก Set Secret</li>
+          <li>ฟรี Set พิเศษ ทุกเดือน</li>
+          <li>ไฟล์ต้นฉบับ</li>
+          <li>สิทธิ์ใช้งานครบ</li>
+        </ul>
+        <button class="btn primary" data-package="SpecialList">เลือกแพ็กเกจ</button>
+      </div>
+      <div class="price-card glass">
+        <h3>Enterprise</h3>
+        <p class="price">ติดต่อเรา</p>
+        <ul>
+          <li>สิทธิ์ใช้งานครบ</li>
+          <li>ที่ปรึกษาเฉพาะกิจ</li>
+          <li>ใบสัญญาแยก</li>
+        </ul>
+        <button class="btn outline" data-package="Enterprise">พูดคุยกับทีม</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- FAQ -->
   <section id="faq" class="section">

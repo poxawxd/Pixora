@@ -34,23 +34,46 @@ function renderOrders(orders){
   }
 
   orders.forEach(order=>{
+    const orderCard = document.createElement('div');
+    orderCard.className = 'order-card glass';
+    orderCard.innerHTML = `<h3>Order: ${order.id}</h3>
+                           <p>สถานะ: ${order.status}</p>
+                           <p>หมายเหตุ: ${order.note || '-'}</p>`;
+
+    const itemsContainer = document.createElement('div');
+    itemsContainer.className = 'items-container';
+
     order.items.forEach(item=>{
       const card = document.createElement('div');
       card.className = 'card glass';
-      card.innerHTML = `
-        <img class="thumb" src="${item.src}" alt="${item.title}" />
-        <div class="meta">
-          <h3>${item.title}</h3>
-          <p>ราคา: ฿${money(item.price)}</p>
-          <p>จำนวน: ${item.qty}</p>
-          <p>สถานะ: ${order.status}</p>
-          <div class="buttons">
-            ${order.status==="approved" ? `<a href="${item.url}" target="_blank" class="btn buy-now">ดาวน์โหลด</a>` : ''}
+
+      if(item.isPackage){
+        // แสดงแพ็กเกจ ไม่โชว์รูป
+        card.innerHTML = `
+          <div class="meta">
+            <div class="title">แพ็กเกจ: ${item.title}</div>
+            <div class="price">ราคา: ฿${money(item.price)}</div>
+            <div class="qty">จำนวน: ${item.qty}</div>
           </div>
-        </div>
-      `;
-      ordersGrid.appendChild(card);
+        `;
+      } else {
+        // สินค้าปกติ
+        card.innerHTML = `
+          <img class="thumb" src="${item.src}" alt="${item.title}" />
+          <div class="meta">
+            <h4>${item.title}</h4>
+            <p>ราคา: ฿${money(item.price)}</p>
+            <p>จำนวน: ${item.qty}</p>
+            ${order.status === "approved" ? `<a href="${item.url}" target="_blank" class="btn buy-now">ดาวน์โหลด</a>` : ''}
+          </div>
+        `;
+      }
+
+      itemsContainer.appendChild(card);
     });
+
+    orderCard.appendChild(itemsContainer);
+    ordersGrid.appendChild(orderCard);
   });
 }
 
@@ -75,6 +98,9 @@ async function loadOrders(uid){
 
 // ===== Firebase Auth: ตรวจสอบผู้ใช้ปัจจุบัน =====
 onAuthStateChanged(auth, user=>{
-  const uid = user ? user.uid : "guest";
-  loadOrders(uid);
+  if(user){
+    loadOrders(user.uid);
+  } else {
+    ordersGrid.innerHTML = `<p style="text-align:center; color:#94a3b8">โปรดเข้าสู่ระบบเพื่อดูคำสั่งซื้อ</p>`;
+  }
 });

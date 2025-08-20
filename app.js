@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-import { PRODUCTS } from './product.js'; // <-- ดึงจาก product.js
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { PRODUCTS } from './product.js';
 
 // ===== Firebase =====
 const firebaseConfig = {
@@ -19,6 +20,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 auth.languageCode = 'th';
 
 // ===== Helpers =====
@@ -51,6 +53,7 @@ const search = $('#search');
 const category = $('#category');
 const sort = $('#sort');
 const cartBtn = $('#btn-cart');
+const userLevelEl = $('#user-level');
 $('#year').textContent = new Date().getFullYear();
 
 // Auth elements
@@ -62,16 +65,15 @@ const userAvatar = $('#user-avatar');
 const btnLogout = $('#btn-logout');
 
 // Admin button
-let adminBtn = document.getElementById('btn-admin');
+let adminBtn = $('#btn-admin');
 
-// Login Modal
+// Login/Register Modals
 const loginModal = $('#login-modal');
 const formLogin = $('#form-login');
 const loginEmail = $('#login-email');
 const loginPassword = $('#login-password');
 const loginMessage = $('#login-message');
 
-// Register Modal
 const registerModal = $('#register-modal');
 const formRegister = $('#form-register');
 const registerEmail = $('#register-email');
@@ -88,11 +90,8 @@ const btnCheckout = $('#btn-checkout');
 function openModal(modal){ modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); }
 function closeModal(modal){ modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); }
 
-// Close buttons & backdrop
 $$('.close').forEach(btn => btn.addEventListener('click', e => closeModal(btn.closest('.modal'))));
 $$('.modal-backdrop').forEach(back => back.addEventListener('click', e => closeModal(back.closest('.modal'))));
-
-// ESC key
 document.addEventListener('keydown', e => {
   if(e.key==='Escape') $$('div.modal').forEach(m=>{if(!m.classList.contains('hidden')) closeModal(m)});
 });
@@ -100,7 +99,15 @@ document.addEventListener('keydown', e => {
 // ===== Render Products =====
 function render(products){
   grid.innerHTML = '';
-  products.forEach(p => {
+  const userLevel = state.user?.level || 'Basic';
+  const filtered = products.filter(p => {
+    if(p.requiredMembership === 'Basic') return true;
+    if(p.requiredMembership === 'Standard') return ['Standard','SpecialList'].includes(userLevel);
+    if(p.requiredMembership === 'SpecialList') return userLevel === 'SpecialList';
+    return false;
+  });
+
+  filtered.forEach(p => {
     const card = document.createElement('div');
     card.className = 'card glass';
     card.innerHTML = `
@@ -120,7 +127,6 @@ function render(products){
     grid.appendChild(card);
   });
 }
-render(PRODUCTS);
 
 // ===== Filters/Search =====
 function applyFilters(){
@@ -128,10 +134,13 @@ function applyFilters(){
   const q = (search.value || '').toLowerCase().trim();
   const cat = category.value;
   const sortBy = sort.value;
-  if(q) results = results.filter(p=>p.title.toLowerCase().includes(q)||p.category.toLowerCase().includes(q));
-  if(cat!=='all') results = results.filter(p=>p.category.toLowerCase()===cat.toLowerCase());
+
+  if(q) results = results.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  if(cat!=='all') results = results.filter(p => p.category.toLowerCase()===cat.toLowerCase());
+
   if(sortBy==='price-asc') results.sort((a,b)=>a.price-b.price);
   if(sortBy==='price-desc') results.sort((a,b)=>b.price-a.price);
+
   render(results);
 }
 [search, category, sort].forEach(el=>el.addEventListener('input',applyFilters));
@@ -145,9 +154,10 @@ function updateCartUI(){
     total += item.price * item.qty;
     const row = document.createElement('div');
     row.className = 'cart-row';
+    const imgHTML = item.isPackage ? '' : `<img src="${item.src}" alt="${item.title}" />`;
     row.innerHTML = `
-      <img src="${item.src}" alt="${item.title}" />
-      <div class="cart-title">${item.title}</div>
+      ${imgHTML}
+      <div class="cart-title">${item.title}${item.isPackage?' (แพ็กเกจ)':''}</div>
       <div class="cart-price">฿${money(item.price * item.qty)}</div>
       <button class="cart-remove" data-remove="${item.id}">ลบ</button>
     `;
@@ -160,16 +170,17 @@ function addToCart(id){
   const product = PRODUCTS.find(p=>p.id===id);
   if(!product) return;
   const existing = state.cart.find(i=>i.id===id);
-  if(existing) existing.qty+=1; else state.cart.push({...product, qty:1});
+  if(existing) existing.qty+=1; else state.cart.push({...product, qty:1, isPackage:false});
   updateCartUI();
   toast('เพิ่มลงตะกร้าแล้ว');
 }
 
-// Cart / Buy buttons
+// ===== Buy Buttons (Products + Packages) =====
 document.addEventListener('click', e=>{
   const addId = e.target.getAttribute('data-add');
   const removeId = e.target.getAttribute('data-remove');
   const buyId = e.target.getAttribute('data-buy');
+  const packageBtn = e.target.getAttribute('data-package');
 
   if(addId){
     if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนเพิ่มสินค้า'; return; }
@@ -185,19 +196,38 @@ document.addEventListener('click', e=>{
     if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนสั่งซื้อ'; return; }
     const product = PRODUCTS.find(p => p.id === buyId);
     if(!product) return;
-    const orderData = { items: [{...product, qty:1}], totalPrice: product.price };
+    const orderData = { items: [{...product, qty:1, isPackage:false}], totalPrice: product.price };
     sessionStorage.setItem('buyNow', JSON.stringify(orderData));
     window.location.href = 'payment.html';
   }
+
+  if(packageBtn){
+    if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนซื้อแพ็กเกจ'; return; }
+    let price = 0;
+    if(packageBtn==='Standard') price=100;
+    if(packageBtn==='SpecialList') price=500;
+    if(packageBtn==='Enterprise'){ toast('โปรดติดต่อทีมงานเพื่อซื้อแพ็กเกจ Enterprise'); return; }
+
+    const orderData = {
+      items:[{ id:packageBtn, title:packageBtn, qty:1, price, isPackage:true }],
+      totalPrice: price
+    };
+    sessionStorage.setItem('buyNow', JSON.stringify(orderData));
+    window.location.href='payment.html';
+  }
 });
 
-cartBtn.addEventListener('click', ()=>openModal(cartModal));
+// Cart modal
+cartBtn.addEventListener('click', ()=>openModal($('#cart-modal')));
 btnCheckout.addEventListener('click', ()=>{
   if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนชำระเงิน'; return; }
   if(state.cart.length===0){ toast('ตะกร้าว่าง'); return; }
-  const orderData = { items: [...state.cart], totalPrice: state.cart.reduce((sum,i)=>sum+i.price*i.qty,0) };
+  const orderData = {
+    items: state.cart.map(i => ({...i})),
+    totalPrice: state.cart.reduce((sum,i)=>sum+i.price*i.qty,0)
+  };
   sessionStorage.setItem('buyNow', JSON.stringify(orderData));
-  window.location.href = 'payment.html';
+  window.location.href='payment.html';
 });
 
 // ===== Header Auth Buttons =====
@@ -224,7 +254,6 @@ formRegister.addEventListener('submit', async e=>{
   const email = registerEmail.value.trim();
   const password = registerPassword.value;
 
-  // ตรวจสอบ Gmail เท่านั้น
   if(!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)){
     registerMessage.textContent = 'โปรดใช้ Gmail ในการสมัครเท่านั้น';
     return;
@@ -250,21 +279,14 @@ btnLogout.addEventListener('click', async ()=>{
     if(adminBtn) adminBtn.classList.add('hidden');
     btnLogin.classList.remove('hidden');
     btnRegister.classList.remove('hidden');
-
-    // ล้างค่า login/register
-    loginEmail.value = '';
-    loginPassword.value = '';
-    loginMessage.textContent = '';
-    registerEmail.value = '';
-    registerPassword.value = '';
-    registerMessage.textContent = '';
-
+    userLevelEl.textContent = 'Basic';
+    applyFilters();
     toast('ออกจากระบบเรียบร้อยแล้ว');
   }catch(err){ console.error(err); toast('เกิดข้อผิดพลาดในการออกจากระบบ'); }
 });
 
-// ===== Auth State Observer =====
-onAuthStateChanged(auth, user => {
+// ===== Auth State Observer + Firestore Level =====
+onAuthStateChanged(auth, async user=>{
   state.user = user || null;
 
   if(user){
@@ -273,28 +295,32 @@ onAuthStateChanged(auth, user => {
     userMenu.classList.remove('hidden');
     userName.textContent = user.displayName || user.email;
     userAvatar.src = user.photoURL || `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(user.email)}`;
-    closeModal(loginModal);
-    closeModal(registerModal);
 
-    // แสดงปุ่ม Admin เฉพาะ UID
+    try{
+      const docRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(docRef);
+      state.user.level = docSnap.exists() ? docSnap.data().level || 'Basic' : 'Basic';
+    }catch(err){ console.error(err); state.user.level='Basic'; }
+
+    userLevelEl.textContent = state.user.level;
+
     if(user.uid === 'o5wUtjhCLQho3H1zQE3FgZgu3Q93'){
       adminBtn.classList.remove('hidden');
-
-      // เพิ่ม listener แค่ครั้งเดียว
       if(!adminBtn.dataset.listener){
-        adminBtn.addEventListener('click', () => {
-          window.location.href = 'admin.html';
-        });
-        adminBtn.dataset.listener = "true";
+        adminBtn.addEventListener('click', () => window.location.href='admin.html');
+        adminBtn.dataset.listener="true";
       }
-    } else {
-      adminBtn.classList.add('hidden');
-    }
-
+    } else adminBtn.classList.add('hidden');
   } else {
     btnLogin.classList.remove('hidden');
     btnRegister.classList.remove('hidden');
     userMenu.classList.add('hidden');
     adminBtn.classList.add('hidden');
+    userLevelEl.textContent = 'Basic';
   }
+
+  applyFilters();
 });
+
+// ===== เริ่มต้น =====
+applyFilters();

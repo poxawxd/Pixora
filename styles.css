@@ -319,3 +319,45 @@ body{
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(124,92,255,.4);
 }
+
+/* ===== User Menu ===== */
+.user-menu{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.user-info{ display:flex; flex-direction:column; gap:0; }
+.user-name{ font-weight:600; }
+.user-level{ color:var(--muted); font-size:0.85rem; }
+
+/* ===== Card สำหรับ Basic/Standard/Special ===== */
+.card{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 360px; /* ทำให้ card เท่ากันทุกระดับ */
+}
+
+/* ถ้าเป็น Basic และปุ่มบางอย่างล็อกไว้ ใช้ visibility แทน display:none */
+.card .meta .buttons .btn.locked{
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Hero */
+.hero-art{ position:relative; height:auto; min-height:300px; }
+.tilt-card img{ width:100%; height:auto; object-fit:cover; }
+
+/* Pricing */
+.pricing{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1rem; }
+.price-card{ min-height: 280px; display:flex; flex-direction:column; justify-content:space-between; }
+
+/* Standard card highlight */
+.price-card.glass.standard{ border:1px solid rgba(124,92,255,.4); box-shadow: 0 4px 12px rgba(124,92,255,.2); }
+
+/* Responsive tweaks */
+@media (max-width:960px){
+  .hero-art{ height:300px; }
+  .grid{ grid-template-columns: repeat(2,1fr); }
+  .pricing{ grid-template-columns:1fr; }
+}
+@media (max-width:560px){
+  .nav-links{ display:none; }
+  .grid{ grid-template-columns:1fr; }
+}

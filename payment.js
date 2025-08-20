@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 // ===== Firebase Config =====
 const firebaseConfig = {
@@ -40,7 +40,7 @@ function showToast(msg, type="info"){
   setTimeout(()=>toastEl.classList.add('hidden'), 2200);
 }
 
-// ===== Render Cart =====
+// ===== Render Cart / Package =====
 function renderCart(){
   if(order.items && order.items.length){
     let total = 0;
@@ -49,16 +49,30 @@ function renderCart(){
       total += item.price*item.qty;
       const card = document.createElement('div');
       card.className = 'card glass';
-      card.innerHTML = `
-        <img class="thumb" src="${item.src}" alt="${item.title}" />
-        <div class="meta">
-          <div>
-            <div class="title">${item.title}</div>
+
+      if(item.isPackage){
+        // แสดงแพ็กเกจ ไม่โชว์รูป
+        card.innerHTML = `
+          <div class="meta">
+            <div class="title">แพ็กเกจ: ${item.title}</div>
             <div class="price">฿${money(item.price)}</div>
             <div class="qty">จำนวน: ${item.qty}</div>
           </div>
-        </div>
-      `;
+        `;
+      } else {
+        // สินค้าธรรมดา
+        card.innerHTML = `
+          <img class="thumb" src="${item.src}" alt="${item.title}" />
+          <div class="meta">
+            <div>
+              <div class="title">${item.title}</div>
+              <div class="price">฿${money(item.price)}</div>
+              <div class="qty">จำนวน: ${item.qty}</div>
+            </div>
+          </div>
+        `;
+      }
+
       cartGrid.appendChild(card);
     });
     totalEl.textContent = money(total);
@@ -95,7 +109,6 @@ checkoutForm.addEventListener('submit', async e=>{
     return;
   }
 
-  // ตรวจสอบ Auth
   const user = auth.currentUser;
   if(!user){
     showToast("กรุณาเข้าสู่ระบบก่อนแจ้งโอน", "error");
@@ -117,13 +130,10 @@ checkoutForm.addEventListener('submit', async e=>{
 
   try {
     await addDoc(collection(db, "orders"), paymentData);
-
     showToast('แจ้งโอนสำเร็จ! ✅', 'success');
     sessionStorage.removeItem('buyNow');
     checkoutForm.reset();
-
     setTimeout(()=>window.location.href='index.html',1200);
-
   } catch(err){
     console.error("Firestore Error:", err);
     showToast('เกิดข้อผิดพลาด ❌ ตรวจสอบคอนโซล', 'error');
