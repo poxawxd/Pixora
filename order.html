@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pixora — คำสั่งซื้อของฉัน</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="order.css" />
 </head>
 <body>
   <!-- Header -->
-  <header class="header glass">
+  <header class="header">
     <div class="container nav">
       <a class="brand" href="index.html">
         <span class="brand-logo">P</span>
@@ -19,7 +19,6 @@
         <a href="index.html#pricing">แพ็กเกจ</a>
         <a href="index.html#faq">คำถามที่พบบ่อย</a>
       </nav>
-      </div>
     </div>
   </header>
 
@@ -31,23 +30,24 @@
     </div>
   </section>
 
-  <!-- Orders List -->
+  <!-- Orders Table -->
   <section class="section">
-    <div class="container" id="orders-container">
-      <!-- Card ของ order จะถูก generate ด้วย JS -->
-      <div class="grid" id="orders-grid">
-        <!-- ตัวอย่าง order card -->
-        <!-- <div class="card glass">
-          <div class="meta">
-            <h3>ชื่อสินค้า</h3>
-            <p>ราคา: ฿100</p>
-            <p>สถานะ: ชำระเงินแล้ว</p>
-            <div class="buttons">
-              <a href="#" class="btn buy-now">ดาวน์โหลด</a>
-            </div>
-          </div>
-        </div> -->
-      </div>
+    <div class="container">
+      <table class="orders-table" id="orders-container">
+        <thead>
+          <tr>
+            <th>ลำดับ</th>
+            <th>ชื่อสินค้า</th>
+            <th>วันที่สั่งซื้อ</th>
+            <th>ราคา</th>
+            <th>สถานะ</th>
+            <th>ดาวน์โหลด</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS จะ generate rows -->
+        </tbody>
+      </table>
     </div>
   </section>
 

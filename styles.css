@@ -361,3 +361,35 @@ body{
   .nav-links{ display:none; }
   .grid{ grid-template-columns:1fr; }
 }
+
+/* ===== Select Fix ===== */
+select.input {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: .6rem .8rem;
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  transition: border .2s, background .2s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23e6eef7' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px 18px;
+  padding-right: 36px; /* กันไม่ให้ text ทับลูกศร */
+}
+
+select.input option {
+  background: var(--bg);
+  color: var(--text);
+}
+
+select.input:focus {
+  border: 1px solid var(--brand);
+  background: rgba(124,92,255,.12);
+}
+

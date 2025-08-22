@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pixora — Admin Orders</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="order.css" />
 </head>
 <body>
-  <!-- Header -->
   <header class="header glass">
     <div class="container nav">
       <a class="brand" href="index.html">
@@ -15,30 +14,37 @@
         <span class="brand-name">Pixora Admin</span>
       </a>
       <div class="auth">
-        <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
       </div>
     </div>
   </header>
 
-  <!-- Page Title -->
   <section class="section">
     <div class="container">
-      <h2>คำสั่งซื้อรออนุมัติ</h2>
-      <p>ตรวจสอบคำสั่งซื้อและอนุมัติหรือปฏิเสธคำสั่งซื้อของลูกค้า</p>
+      <h2>คำสั่งซื้อทั้งหมด</h2>
+      <p>ตรวจสอบคำสั่งซื้อและอนุมัติ/ปฏิเสธคำสั่งซื้อของลูกค้า</p>
     </div>
   </section>
 
-  <!-- Orders List -->
   <section class="section">
-    <div class="container" id="orders-container">
-      <div class="grid" id="admin-orders-grid">
-        <!-- Card ของ order จะถูก generate ด้วย JS -->
-      </div>
+    <div class="container">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>ลำดับ</th>
+            <th>ผู้ใช้</th>
+            <th>ชื่อสินค้า</th>
+            <th>วันที่สั่งซื้อ</th>
+            <th>ราคา</th>
+            <th>สถานะ</th>
+            <th>การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="orders-container">
+          <tr><td colspan="8" style="text-align:center; color:var(--muted)">กำลังโหลด...</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
-
-  <!-- Toast / Notifications -->
-  <div id="toast" class="hidden"></div>
 
   <script type="module" src="admin.js"></script>
 </body>

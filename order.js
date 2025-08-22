@@ -1,84 +1,77 @@
-// ===== Firebase =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getFirestore, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-// ===== Firebase Config =====
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCHq_JNCPMJJOQbC5wyvsEguII3y8TjYJA",
   authDomain: "pixora-e368a.firebaseapp.com",
   projectId: "pixora-e368a",
-  storageBucket: "pixora-e368a.firebasestorage.app",
+  storageBucket: "pixora-e368a.appspot.com",
   messagingSenderId: "1020139140385",
   appId: "1:1020139140385:web:402852a38f3dc7e23eba60",
   measurementId: "G-PDQQ3YJENR"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
+const ordersContainer = document.querySelector("#orders-container tbody");
 
-// ===== DOM Elements =====
-const ordersGrid = document.getElementById('orders-grid');
+// ฟังก์ชันแปลงตัวเลขเป็นรูปแบบเงินไทย
+function money(n) { 
+  return Number(n).toLocaleString('th-TH', { maximumFractionDigits: 0 }); 
+}
 
-// ===== Helper =====
-function money(n){ return Number(n).toLocaleString('th-TH', {maximumFractionDigits:0}); }
+// แสดงคำสั่งซื้อใน table
+function renderOrders(orders) {
+  ordersContainer.innerHTML = '';
 
-// ===== Render Orders =====
-function renderOrders(orders){
-  ordersGrid.innerHTML = '';
-
-  if(!orders.length){
-    ordersGrid.innerHTML = `<p style="text-align:center; color:#94a3b8">ยังไม่มีคำสั่งซื้อ</p>`;
+  if (!orders.length) {
+    ordersContainer.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted)">ยังไม่มีคำสั่งซื้อ</td></tr>`;
     return;
   }
 
-  orders.forEach(order=>{
-    const orderCard = document.createElement('div');
-    orderCard.className = 'order-card glass';
-    orderCard.innerHTML = `<h3>Order: ${order.id}</h3>
-                           <p>สถานะ: ${order.status}</p>
-                           <p>หมายเหตุ: ${order.note || '-'}</p>`;
+  orders.forEach((order, index) => {
+    // สร้าง HTML ของรายการสินค้า (ไม่มีปุ่มดาวน์โหลด)
+    const itemsHTML = order.items && order.items.length > 0
+      ? order.items.map(item => `<div><strong>${item.title}</strong> — ฿${money(item.price)} x${item.qty}</div>`).join('')
+      : '<div style="color:var(--muted)">ไม่มีสินค้าภายในคำสั่งซื้อนี้</div>';
 
-    const itemsContainer = document.createElement('div');
-    itemsContainer.className = 'items-container';
+    // สร้างปุ่มดาวน์โหลดในคอลัมน์ดาวน์โหลดเท่านั้น
+    const downloadHTML = order.status === "approved" && order.items && order.items.length > 0
+      ? order.items.map(i => i.url ? `<a class="btn buy-now" href="${i.url}" download>ดาวน์โหลด</a>` : "-").join('<br>')
+      : "-";
 
-    order.items.forEach(item=>{
-      const card = document.createElement('div');
-      card.className = 'card glass';
+    // กำหนดสีและข้อความของสถานะ
+    let statusClass = '', statusText = '';
+    switch(order.status) {
+      case "approved": statusClass='status-approved'; statusText='เสร็จสิ้น'; break;
+      case "pending": statusClass='status-pending'; statusText='รอดำเนินการ'; break;
+      case "rejected": statusClass='status-rejected'; statusText='ล้มเหลว'; break;
+      default: statusClass=''; statusText=order.status;
+    }
 
-      if(item.isPackage){
-        // แสดงแพ็กเกจ ไม่โชว์รูป
-        card.innerHTML = `
-          <div class="meta">
-            <div class="title">แพ็กเกจ: ${item.title}</div>
-            <div class="price">ราคา: ฿${money(item.price)}</div>
-            <div class="qty">จำนวน: ${item.qty}</div>
-          </div>
-        `;
-      } else {
-        // สินค้าปกติ
-        card.innerHTML = `
-          <img class="thumb" src="${item.src}" alt="${item.title}" />
-          <div class="meta">
-            <h4>${item.title}</h4>
-            <p>ราคา: ฿${money(item.price)}</p>
-            <p>จำนวน: ${item.qty}</p>
-            ${order.status === "approved" ? `<a href="${item.url}" target="_blank" class="btn buy-now">ดาวน์โหลด</a>` : ''}
-          </div>
-        `;
-      }
+    // ใช้ totalPrice จาก Firestore หรือรวมจาก items หากไม่มี
+    const totalPrice = order.totalPrice || order.items?.reduce((sum, i) => sum + i.price * i.qty, 0) || 0;
 
-      itemsContainer.appendChild(card);
-    });
-
-    orderCard.appendChild(itemsContainer);
-    ordersGrid.appendChild(orderCard);
+    // สร้างแถว table
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td data-label="ลำดับ">${index + 1}</td>
+      <td data-label="ชื่อสินค้า">${itemsHTML}</td>
+      <td data-label="วันที่สั่งซื้อ">${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('th-TH') : '-'}</td>
+      <td data-label="ราคา">${money(totalPrice)} บาท</td>
+      <td data-label="สถานะ" class="${statusClass}">${statusText}</td>
+      <td data-label="ดาวน์โหลด">${downloadHTML}</td>
+    `;
+    ordersContainer.appendChild(tr);
   });
 }
 
-// ===== Load Orders from Firestore =====
-async function loadOrders(uid){
+// โหลดคำสั่งซื้อของผู้ใช้
+async function loadOrders(uid) {
   try {
     const q = query(
       collection(db, "orders"),
@@ -87,20 +80,16 @@ async function loadOrders(uid){
     );
 
     const snapshot = await getDocs(q);
-    const orders = snapshot.docs.map(doc=>({ id: doc.id, ...doc.data() }));
-
+    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderOrders(orders);
-  } catch(err){
-    console.error("Firestore Error:", err);
-    ordersGrid.innerHTML = `<p style="text-align:center; color:#ef4444">เกิดข้อผิดพลาดในการโหลดคำสั่งซื้อ</p>`;
+  } catch (err) {
+    console.error(err);
+    ordersContainer.innerHTML = `<tr><td colspan="6" style="color:var(--danger); text-align:center">เกิดข้อผิดพลาดในการโหลดคำสั่งซื้อ</td></tr>`;
   }
 }
 
-// ===== Firebase Auth: ตรวจสอบผู้ใช้ปัจจุบัน =====
-onAuthStateChanged(auth, user=>{
-  if(user){
-    loadOrders(user.uid);
-  } else {
-    ordersGrid.innerHTML = `<p style="text-align:center; color:#94a3b8">โปรดเข้าสู่ระบบเพื่อดูคำสั่งซื้อ</p>`;
-  }
+// ตรวจสอบสถานะผู้ใช้งาน
+onAuthStateChanged(auth, user => {
+  if (user) loadOrders(user.uid);
+  else ordersContainer.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted)">โปรดเข้าสู่ระบบเพื่อดูคำสั่งซื้อ</td></tr>`;
 });
