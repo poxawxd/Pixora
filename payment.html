@@ -68,7 +68,7 @@
     <!-- ฟอร์ม -->
     <form id="checkout-form" class="form-card glass" aria-label="ฟอร์มการชำระเงิน">
       <div class="form-group">
-        <label>อีเมลสำหรับติดต่อ
+        <label>อีเมลสำหรับติดต่อ/เพิ่มสิทธ์
           <input type="email" id="checkout-email" class="input" required placeholder="you@example.com" />
         </label>
       </div>
@@ -99,3 +99,9 @@
   <script type="module" src="payment.js"></script>
 </body>
 </html>
+
+<script>
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+</script>

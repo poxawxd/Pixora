@@ -393,3 +393,19 @@ select.input:focus {
   background: rgba(124,92,255,.12);
 }
 
+.lightbox-card {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.lightbox-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+

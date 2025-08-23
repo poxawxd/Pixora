@@ -102,47 +102,47 @@
     </div>
   </section>
 
-<!-- Pricing -->
-<section id="pricing" class="section alt">
-  <div class="container">
-    <div class="section-head">
-      <h2>แพ็กเกจใบอนุญาต</h2>
-      <p>เลือกแพ็กเกจตามการใช้งานของคุณ ใบอนุญาตจะคงอยู่ตลอด</p>
+  <!-- Pricing -->
+  <section id="pricing" class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>แพ็กเกจใบอนุญาต</h2>
+        <p>เลือกแพ็กเกจตามการใช้งานของคุณ ใบอนุญาตจะคงอยู่ตลอด</p>
+      </div>
+      <div class="pricing">
+        <div class="price-card glass">
+          <h3>Standard</h3>
+          <p class="price">฿100</p>
+          <ul>
+            <li>ปลดล็อก Set พิเศษV1</li>
+            <li>สิทธิ์ใช้งานครบ</li>
+          </ul>
+          <button class="btn outline" data-package="Standard">เลือกแพ็กเกจ</button>
+        </div>
+        <div class="price-card glass highlight">
+          <h3>SpecialList</h3>
+          <p class="price">฿500</p>
+          <ul>
+            <li>ปลดล็อก Set Secret</li>
+            <li>ฟรี Set พิเศษ ทุกเดือน</li>
+            <li>ไฟล์ต้นฉบับ</li>
+            <li>สิทธิ์ใช้งานครบ</li>
+          </ul>
+          <button class="btn primary" data-package="SpecialList">เลือกแพ็กเกจ</button>
+        </div>
+        <div class="price-card glass">
+          <h3>Enterprise</h3>
+          <p class="price">ติดต่อเรา</p>
+          <ul>
+            <li>สิทธิ์ใช้งานครบ</li>
+            <li>ที่ปรึกษาเฉพาะกิจ</li>
+            <li>ใบสัญญาแยก</li>
+          </ul>
+          <button class="btn outline" data-package="Enterprise">พูดคุยกับทีม</button>
+        </div>
+      </div>
     </div>
-    <div class="pricing">
-      <div class="price-card glass">
-        <h3>Standard</h3>
-        <p class="price">฿100</p>
-        <ul>
-          <li>ปลดล็อก Set พิเศษV1</li>
-          <li>สิทธิ์ใช้งานครบ</li>
-        </ul>
-        <button class="btn outline" data-package="Standard">เลือกแพ็กเกจ</button>
-      </div>
-      <div class="price-card glass highlight">
-        <h3>SpecialList</h3>
-        <p class="price">฿500</p>
-        <ul>
-          <li>ปลดล็อก Set Secret</li>
-          <li>ฟรี Set พิเศษ ทุกเดือน</li>
-          <li>ไฟล์ต้นฉบับ</li>
-          <li>สิทธิ์ใช้งานครบ</li>
-        </ul>
-        <button class="btn primary" data-package="SpecialList">เลือกแพ็กเกจ</button>
-      </div>
-      <div class="price-card glass">
-        <h3>Enterprise</h3>
-        <p class="price">ติดต่อเรา</p>
-        <ul>
-          <li>สิทธิ์ใช้งานครบ</li>
-          <li>ที่ปรึกษาเฉพาะกิจ</li>
-          <li>ใบสัญญาแยก</li>
-        </ul>
-        <button class="btn outline" data-package="Enterprise">พูดคุยกับทีม</button>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
   <!-- FAQ -->
   <section id="faq" class="section">
@@ -241,8 +241,23 @@
     </div>
   </div>
 
+  <!-- ✅ Image Lightbox Modal -->
+  <div id="lightbox-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="lightbox"></div>
+    <div class="modal-card glass lightbox-card">
+      <button class="close" data-close="lightbox" aria-label="ปิด">×</button>
+      <img id="lightbox-img" src="" alt="Full view" />
+    </div>
+  </div>
+
   <!-- Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <script type="module" src="app.js"></script>
 </body>
 </html>
+
+<script>
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+</script>

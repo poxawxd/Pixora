@@ -324,3 +324,17 @@ onAuthStateChanged(auth, async user=>{
 
 // ===== เริ่มต้น =====
 applyFilters();
+
+// Lightbox
+const lightboxModal = $('#lightbox-modal');
+const lightboxImg = $('#lightbox-img');
+
+document.addEventListener('click', e => {
+  if(e.target.classList.contains('thumb')){
+    const src = e.target.src; // ใช้ src ของ thumbnail หรือ fullSrc ถ้ามี
+    lightboxImg.src = src;
+    openModal(lightboxModal);
+  }
+});
+
+
