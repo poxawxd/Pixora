@@ -52,7 +52,7 @@ export const PRODUCTS = [
     id:'MochiLaplus', title:'Mochi Laplus', category:'Mochi', price:80, 
     src:'https://i.postimg.cc/6qpP19Ck/Mochi0002.jpg', 
     url:'https://drive.google.com/drive/folders/1CXtTjpgP2KZKm16VDiQ-YyqMWQvhsLB8H?usp=drive_link', 
-    detail:'เซ็ตภาพ Mochi Laplus 40 Picture 1 Video', 
+    detail:'เซ็ตภาพ Mochi Laplus 41 Picture 1 Video', 
     requiredMembership: 'Basic'
   }
 ];
