@@ -107,6 +107,34 @@ document.addEventListener('keydown', e => {
 // How modal
 btnHow.addEventListener('click', ()=>openModal(howModal));
 
+// ===== Detail Modal =====
+const detailModal = document.createElement('div');
+detailModal.className = 'modal hidden';
+detailModal.innerHTML = `
+  <div class="modal-backdrop" style="position:fixed; inset:0; background:rgba(0,0,0,.5);"></div>
+  <div class="modal-content glass" style="padding:1rem; max-width:400px; margin:10vh auto; border-radius:12px; position:relative;">
+    <span class="close" style="position:absolute; top:8px; right:8px; cursor:pointer;">✕</span>
+    <h2 id="detail-title"></h2>
+    <img id="detail-img" style="width:100%; margin:8px 0;" />
+    <p id="detail-text"></p>
+  </div>
+`;
+document.body.appendChild(detailModal);
+const detailTitle = $('#detail-title', detailModal);
+const detailImg = $('#detail-img', detailModal);
+const detailText = $('#detail-text', detailModal);
+
+// ปุ่ม close และ backdrop
+detailModal.querySelector('.close').addEventListener('click', () => closeModal(detailModal));
+detailModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(detailModal));
+
+function showDetailModal(product){
+  detailTitle.textContent = product.title;
+  detailImg.src = product.src;
+  detailText.textContent = product.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
+  openModal(detailModal);
+}
+
 // ===== Render Products =====
 function render(products){
   grid.innerHTML = '';
@@ -123,7 +151,21 @@ function render(products){
     card.className = 'card glass';
     card.innerHTML = `
       <span class="tag">${p.category}</span>
-      <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy" />
+      <div class="thumb-wrapper" style="position:relative;">
+        <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy" />
+        <button class="btn detail-btn" style="
+          position:absolute;
+          top:8px;
+          right:8px;
+          padding:.3rem .5rem;
+          font-size:.75rem;
+          border:none;
+          border-radius:6px;
+          background:rgba(0,0,0,.6);
+          color:white;
+          cursor:pointer;
+        ">ดูรายละเอียด</button>
+      </div>
       <div class="meta">
         <div>
           <div class="title">${p.title}</div>
@@ -136,6 +178,11 @@ function render(products){
       </div>
     `;
     grid.appendChild(card);
+
+    // เพิ่ม Event สำหรับ detail button
+    card.querySelector('.detail-btn').addEventListener('click', () => {
+      showDetailModal(p);
+    });
   });
 }
 
