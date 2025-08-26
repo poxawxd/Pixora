@@ -1,0 +1,102 @@
+/* ===== Responsive Layouts for Pixora ===== */
+
+/* Tablet & Small Laptop */
+@media (max-width: 960px) {
+  /* hero */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  .hero-copy {
+    order: 2;
+  }
+  .hero-art {
+    order: 1;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    height: auto;
+  }
+  .hero-art img {
+    max-width: 160px;
+    height: auto;
+  }
+
+  /* grid/gallery */
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  /* pricing cards */
+  .pricing {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* section heads */
+  .section-head {
+    text-align: center;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 560px) {
+  /* nav */
+  .nav-links {
+    display: none;
+  }
+  .auth {
+    gap: 0.5rem;
+  }
+
+  /* hero */
+  .hero-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .hero-cta .btn {
+    width: 100%;
+  }
+
+  .hero-art {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero-art img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* gallery grid full width */
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* filters stacked */
+  .filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .filters .input {
+    width: 100%;
+  }
+
+  /* footer */
+  .foot {
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+  }
+
+  /* modals full width */
+  .modal-card {
+    width: 95%;
+    max-width: 400px;
+  }
+}
