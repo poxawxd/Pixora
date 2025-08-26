@@ -11,7 +11,7 @@ export const PRODUCTS = [
     src:'https://i.postimg.cc/MKwfZtL7/unnamed1f7f7a76908107f4f.jpg', 
     url:'https://drive.google.com/drive/folders/1z96MRzcD9q95uo2Y_3H7YO1ki74i2t_N', 
     detail:'เซ็ตภาพ Rainxang SpiderGirl', 
-    requiredMembership: 'Standard'
+    requiredMembership: 'basic'
   },
   { 
     id:'MochiRedBlue', title:'Mochi Red&Blue', category:'Mochi', price:40, 

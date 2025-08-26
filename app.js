@@ -80,11 +80,19 @@ const registerEmail = $('#register-email');
 const registerPassword = $('#register-password');
 const registerMessage = $('#register-message');
 
+// How-to Modal
+const howModal = $('#how-modal');
+const btnHow = $('#btn-how');
+
 // Cart elements
 const cartCount = $('#cart-count');
 const cartItems = $('#cart-items');
 const cartTotal = $('#cart-total');
 const btnCheckout = $('#btn-checkout');
+
+// Lightbox
+const lightboxModal = $('#lightbox-modal');
+const lightboxImg = $('#lightbox-img');
 
 // ===== Modal Functions =====
 function openModal(modal){ modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); }
@@ -95,6 +103,9 @@ $$('.modal-backdrop').forEach(back => back.addEventListener('click', e => closeM
 document.addEventListener('keydown', e => {
   if(e.key==='Escape') $$('div.modal').forEach(m=>{if(!m.classList.contains('hidden')) closeModal(m)});
 });
+
+// How modal
+btnHow.addEventListener('click', ()=>openModal(howModal));
 
 // ===== Render Products =====
 function render(products){
@@ -119,8 +130,8 @@ function render(products){
           <div class="muted">฿${money(p.price)}</div>
         </div>
         <div class="buttons">
-          <button class="btn primary" data-add="${p.id}">เพิ่มลงตะกร้า</button>
           <button class="btn primary" data-buy="${p.id}">สั่งซื้อเลย</button>
+          <button class="btn outline" data-add="${p.id}">เพิ่มลงตะกร้า</button>
         </div>
       </div>
     `;
@@ -175,7 +186,7 @@ function addToCart(id){
   toast('เพิ่มลงตะกร้าแล้ว');
 }
 
-// ===== Buy Buttons (Products + Packages) =====
+// ===== Buy/Add Buttons =====
 document.addEventListener('click', e=>{
   const addId = e.target.getAttribute('data-add');
   const removeId = e.target.getAttribute('data-remove');
@@ -206,7 +217,7 @@ document.addEventListener('click', e=>{
     let price = 0;
     if(packageBtn==='Standard') price=100;
     if(packageBtn==='SpecialList') price=500;
-    if(packageBtn==='Enterprise'){ toast('โปรดติดต่อทีมงานเพื่อซื้อแพ็กเกจ Enterprise'); return; }
+    if(packageBtn==='Enterprise'){ window.open("https://t.me/ShiroiKJP", "_blank"); return; }
 
     const orderData = {
       items:[{ id:packageBtn, title:packageBtn, qty:1, price, isPackage:true }],
@@ -234,7 +245,7 @@ btnCheckout.addEventListener('click', ()=>{
 btnLogin.addEventListener('click', ()=>openModal(loginModal));
 btnRegister.addEventListener('click', ()=>openModal(registerModal));
 
-// ===== Login/Register Submit =====
+// ===== Login/Register =====
 formLogin.addEventListener('submit', async e=>{
   e.preventDefault();
   try{
@@ -285,7 +296,7 @@ btnLogout.addEventListener('click', async ()=>{
   }catch(err){ console.error(err); toast('เกิดข้อผิดพลาดในการออกจากระบบ'); }
 });
 
-// ===== Auth State Observer + Firestore Level =====
+// ===== Auth State Observer =====
 onAuthStateChanged(auth, async user=>{
   state.user = user || null;
 
@@ -322,19 +333,14 @@ onAuthStateChanged(auth, async user=>{
   applyFilters();
 });
 
-// ===== เริ่มต้น =====
-applyFilters();
-
-// Lightbox
-const lightboxModal = $('#lightbox-modal');
-const lightboxImg = $('#lightbox-img');
-
+// ===== Lightbox =====
 document.addEventListener('click', e => {
   if(e.target.classList.contains('thumb')){
-    const src = e.target.src; // ใช้ src ของ thumbnail หรือ fullSrc ถ้ามี
+    const src = e.target.src;
     lightboxImg.src = src;
     openModal(lightboxModal);
   }
 });
 
-
+// ===== Initialize =====
+applyFilters();

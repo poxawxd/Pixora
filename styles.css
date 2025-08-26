@@ -326,7 +326,6 @@ body{
 .user-name{ font-weight:600; }
 .user-level{ color:var(--muted); font-size:0.85rem; }
 
-/* ===== Card สำหรับ Basic/Standard/Special ===== */
 .card{
   display: flex;
   flex-direction: column;
@@ -408,4 +407,12 @@ select.input:focus {
   object-fit: contain;
 }
 
+.tg-link{
+  color: var(--brand-2);       /* ใช้สีฟ้าเขียว */
+  font-weight: 600;
+  text-decoration: none;
+}
+.tg-link:hover{
+  color: var(--brand);         /* hover เป็นม่วง */
+}
 
