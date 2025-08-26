@@ -93,12 +93,3 @@ onAuthStateChanged(auth, user => {
   if (user) loadOrders(user.uid);
   else ordersContainer.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted)">โปรดเข้าสู่ระบบเพื่อดูคำสั่งซื้อ</td></tr>`;
 });
-
-document.querySelectorAll("#orders-container tbody tr").forEach((row) => {
-  row.querySelectorAll("td").forEach((cell, i) => {
-    const header = document.querySelector(
-      "#orders-container thead th:nth-child(" + (i + 1) + ")"
-    ).innerText;
-    cell.setAttribute("data-label", header);
-  });
-});
