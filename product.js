@@ -15,35 +15,35 @@ export const PRODUCTS = [
   },
   { 
     id:'MochiRedBlue', title:'Mochi Red&Blue', category:'Mochi', price:40, 
-    src:'https://i.postimg.cc/1XzgHFBX/Mochi1052.jp', 
+    src:'https://i.postimg.cc/1XzgHFBX/Mochi1052.jpg', 
     url:'https://drive.google.com/drive/folders/1Ia3-8uEFu7a3PDgJdlV9a_YaD39KAkvu', 
     detail:'เซ็ตภาพ Mochi Red&Blue', 
     requiredMembership: 'Basic'
   },
   { 
     id:'MochiStrawberryBikini', title:'Mochi Strawberry Bikini', category:'Mochi', price:70, 
-    src:'https://i.postimg.cc/9MkV0z55/Mochi0342.jp', 
+    src:'https://i.postimg.cc/9MkV0z55/Mochi0342.jpg', 
     url:'https://drive.google.com/drive/folders/1HJ7igMkiqtLd5DW3ff7Af5a4Ba5e00bs', 
     detail:'เซ็ตภาพ Mochi Strawberry Bikini', 
     requiredMembership: 'Basic'
   },
   { 
     id:'MochiShimakaze', title:'Mochi Shimakaze', category:'Mochi', price:100, 
-    src:'https://i.postimg.cc/9fwG4fDx/Mochi0144.jp', 
+    src:'https://i.postimg.cc/9fwG4fDx/Mochi0144.jpg', 
     url:'https://drive.google.com/drive/folders/1FEyV4DSF6OCaPhKQ2LnlKn1qK8j6cpOa?usp=sharing', 
     detail:'เซ็ตภาพ Mochi Shimakaze', 
     requiredMembership: 'Basic'
   },
   { 
     id:'ByzekoChristmas', title:'Byzeko Christmas', category:'Byzeko', price:50, 
-    src:'https://i.postimg.cc/qMgFVPSV/SAVE-20250608-181447.jp', 
+    src:'https://i.postimg.cc/qMgFVPSV/SAVE-20250608-181447.jpg', 
     url:'https://drive.google.com/drive/folders/1NGxz20Jmgqlf1D3Yxf47w9IiLVLxTsiS', 
     detail:'เซ็ตภาพ Byzeko Christmas', 
     requiredMembership: 'Basic'
   },
   { 
     id:'MochiWhiteBikini', title:'Mochi White Bikini', category:'Mochi', price:30, 
-    src:'https://i.postimg.cc/26LFBbn3/Mochi0073.jp', 
+    src:'https://i.postimg.cc/26LFBbn3/Mochi0073.jpg', 
     url:'https://drive.google.com/drive/folders/17twSgvLf7fIycEvqc1HVGQG2K4iwi-q9?usp=drive_link', 
     detail:'เซ็ตภาพ Mochi White Bikini', 
     requiredMembership: 'Basic'
