@@ -12,7 +12,6 @@
   --shadow: 0 10px 30px rgba(0,0,0,.35);
   --radius: 16px;
 }
-
 *{ box-sizing: border-box; }
 html, body { height: 100%; }
 body{
@@ -24,9 +23,7 @@ body{
               var(--bg);
   line-height: 1.6;
 }
-
 .container{ width: min(1120px, 92%); margin: 0 auto; }
-
 .glass{
   background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.03));
   backdrop-filter: blur(10px);
@@ -57,11 +54,9 @@ body{
   color:#0b0f14; border-radius:12px;
 }
 .brand-name{ font-weight:700; font-size:1.1rem; letter-spacing:.3px; }
-
 .nav-links{ display:flex; gap:1rem; }
 .nav-links a{ color:var(--muted); text-decoration:none; font-weight:500; }
 .nav-links a:hover{ color:var(--text); }
-
 .auth{ display:flex; align-items:center; gap:.5rem; }
 .icon-btn{
   display:inline-grid; place-items:center; width:40px; height:40px;
@@ -93,7 +88,6 @@ body{
 .btn.subtle{ background:transparent; border:1px solid rgba(255,255,255,.12); color:var(--muted); }
 .btn.lg{ padding:.8rem 1.2rem; font-size:1.05rem; }
 .btn.full{ width:100%; }
-
 .btn.buy-now{ background: linear-gradient(90deg, var(--brand), var(--brand-2)); color:#0b0f14; border:none; }
 .btn.add-cart{ background: transparent; border:1px solid rgba(255,255,255,.24); color: var(--text); }
 .hidden{ display:none !important; }
@@ -106,7 +100,6 @@ body{
 .hero-cta{ display:flex; gap:.8rem; }
 .trust{ display:flex; gap:1rem; opacity:.7; margin-top:1.2rem; }
 .trust img{ width:24px; height:24px; filter: grayscale(1) contrast(1.2); opacity:.8; }
-
 .hero-art{ position:relative; height:auto; min-height:600px; }
 .tilt-card{ position:absolute; width: 58%; transform: rotate(0deg); overflow:hidden; }
 .tilt-card img{ width:100%; height:auto; object-fit:cover; display:block; }
@@ -206,13 +199,13 @@ body{
 }
 .close:hover{ background: rgba(255,255,255,.12); }
 
+/* ===== Cart ===== */
 .cart-items{ display:flex; flex-direction:column; gap:.6rem; max-height: 50vh; overflow:auto; }
 .cart-row{ display:grid; grid-template-columns: 64px 1fr auto auto; gap:.6rem; align-items:center; padding:.4rem; border:1px solid rgba(255,255,255,.08); border-radius:12px; }
 .cart-row img{ width:64px; height:48px; object-fit:cover; border-radius:8px; }
 .cart-title{ font-weight:600; }
 .cart-price{ font-weight:700; }
 .cart-remove{ background:transparent; border:1px solid rgba(255,255,255,.18); color:var(--muted); border-radius:10px; cursor:pointer; padding:.3rem .5rem; }
-
 .cart-foot{ margin-top:.8rem; display:flex; align-items:center; justify-content:space-between; }
 .cart-total{ font-weight:700; font-size:1.05rem; }
 
@@ -310,97 +303,43 @@ select.input {
   background-size: 18px 18px;
   padding-right: 36px;
 }
-select.input option {
-  background: var(--bg);
-  color: var(--text);
-}
-select.input:focus {
-  border: 1px solid var(--brand);
-  background: rgba(124,92,255,.12);
-}
+select.input option { background: var(--bg); color: var(--text); }
+select.input:focus { border: 1px solid var(--brand); background: rgba(124,92,255,.12); }
 
 /* ===== Lightbox ===== */
-.lightbox-card {
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-.lightbox-card img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
+.lightbox-card { max-width: 90vw; max-height: 90vh; display: flex; align-items: center; justify-content: center; padding: 0; }
+.lightbox-card img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* ===== Telegram Link ===== */
-.tg-link{
-  color: var(--brand-2);
-  font-weight: 600;
-  text-decoration: none;
-}
-.tg-link:hover{
-  color: var(--brand);
-}
+.tg-link{ color: var(--brand-2); font-weight: 600; text-decoration: none; }
+.tg-link:hover{ color: var(--brand); }
 
-/* Puzzle Overlay */
-#puzzle-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.3); /* ทำให้มองเห็นด้านหลังเล็กน้อย */
-  z-index: 9998;
-  display: none;
+/* ===== Puzzle Overlay ===== */
+#puzzle-overlay{ position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; display: none; }
+#puzzle-overlay.active{ display: block; }
+#puzzle-container{
+  position: fixed; top:50%; left:50%; transform: translate(-50%, -50%);
+  z-index: 9999; background: rgba(11,18,26,0.95); padding: 16px;
+  border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.7);
+  display: grid; justify-items: center; align-items: center;
 }
+#puzzle-container.hidden{ display: none !important; }
+#puzzle{ display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px); grid-gap: 4px; }
+.piece{ width: 100px; height: 100px; cursor: grab; background-size: 300px 300px; border: 1px solid #fff; }
+#message{ margin-top: 12px; text-align: center; font-size: 1.2rem; color: #ffd166; font-weight: bold; }
 
-/* Puzzle Container */
-#puzzle-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  background: rgba(11,18,26,0.95);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.7);
-  display: grid;
-  justify-items: center;
-  align-items: center;
+/* ===== Book Button ===== */
+#btn-book{
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  padding: 10px 16px; background: #7c5cff; color: #fff;
+  border-radius: 8px; font-size: 14px; text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  transition: background 0.3s, transform 0.2s;
 }
+#btn-book:hover{ background: #9d7cff; transform: translateY(-2px); }
 
-#puzzle-container.hidden {
-  display: none !important;
-}
-
-/* Puzzle Grid */
-#puzzle {
-  display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-gap: 4px;
-}
-
-/* Puzzle Piece */
-.piece {
-  width: 100px;
-  height: 100px;
-  cursor: grab;
-  background-size: 300px 300px;
-  border: 1px solid #fff;
-}
-
-/* Puzzle Message */
-#message {
-  margin-top: 12px;
-  text-align: center;
-  font-size: 1.2rem;
-  color: #ffd166;
-}
-
-/* แสดง overlay เมื่อ active */
-#puzzle-overlay.active {
-  display: block;
+/* ===== Puzzle Mobile Responsive ===== */
+@media (max-width: 400px){
+  #puzzle{ grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); }
+  .piece{ width: 70px; height: 70px; background-size: 210px 210px; }
 }

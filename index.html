@@ -9,6 +9,114 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="mobile.index.css" media="(max-width: 960px)">
+  <style>
+    /* ปุ่มเมนู */
+    #menu-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #7c5cff;
+      color: #fff;
+      font-size: 20px;
+      padding: 12px 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: background 0.3s, transform 0.2s;
+    }
+    #menu-toggle:hover {
+      background: #9d7cff;
+      transform: scale(1.1);
+    }
+
+    /* กล่องเมนู */
+    #menu-options {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background: rgba(30,30,30,0.95);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 9998;
+    }
+    #menu-options button,
+    #menu-options a {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: left;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    #menu-options button:hover,
+    #menu-options a:hover {
+      background: #555;
+    }
+
+    /* ซ่อน */
+    .hidden {
+      display: none;
+    }
+
+    /* Puzzle container */
+    #puzzle-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+      background: rgba(11,18,26,0.95);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      display: grid;
+      justify-items: center;
+      align-items: center;
+    }
+    #puzzle-container.hidden {
+      display: none !important;
+    }
+    #puzzle-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 99997;
+    }
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 4px;
+      position: relative;
+      z-index: 99999;
+    }
+    .piece {
+      width: 100px;
+      height: 100px;
+      cursor: grab;
+      background-size: 300px 300px;
+      border: 1px solid #fff;
+      z-index: 2;
+    }
+    #message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ffd166;
+      z-index: 2;
+    }
+  </style>
 </head>
 <body>
   <!-- Top Notice -->
@@ -31,9 +139,7 @@
       <div class="auth">
         <button id="btn-login" class="btn primary">เข้าสู่ระบบ</button>
         <button id="btn-register" class="btn outline">สมัครสมาชิก</button>
-
         <button id="btn-admin" class="btn primary hidden">หน้า Admin</button>
-
         <div id="user-menu" class="user-menu hidden">
           <img id="user-avatar" class="avatar" alt="avatar" />
           <div class="user-info">
@@ -43,7 +149,6 @@
           <a href="order.html" class="btn primary" id="btn-my-orders">คำสั่งซื้อของฉัน</a>
           <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
         </div>
-
         <button id="btn-cart" class="icon-btn" aria-label="ตะกร้า" title="ตะกร้า">
           <span class="material-symbols-outlined">shopping_cart</span>
           <span id="cart-count" class="badge">0</span>
@@ -52,20 +157,20 @@
     </div>
   </header>
 
-<!-- ปุ่มเปิด puzzle -->
-<button id="btn-puzzle" class="btn primary" style="position:fixed; bottom:20px; right:20px; z-index:9999;">
-  เปิด Jigsaw Puzzle
-</button>
+  <!-- ปุ่มเมนู -->
+  <div id="menu-toggle">☰</div>
+  <div id="menu-options" class="hidden">
+    <button onclick="openPuzzle()">🧩 Jigsaw Puzzle</button>
+    <a href="book.html">📖 Book Gallery</a>
+  </div>
 
-<!-- Overlay สำหรับคลิกรอบนอก -->
-<div id="puzzle-overlay" class="hidden"></div>
-
-<!-- container puzzle -->
-<div id="puzzle-container" class="hidden">
-  <button id="puzzle-close" class="btn subtle">× ปิด</button>
-  <div id="puzzle"></div>
-  <div id="message"></div>
-</div> 
+  <!-- Overlay + Puzzle -->
+  <div id="puzzle-overlay" class="hidden"></div>
+  <div id="puzzle-container" class="hidden">
+    <button id="puzzle-close" class="btn subtle">× ปิด</button>
+    <div id="puzzle"></div>
+    <div id="message"></div>
+  </div>
 
   <!-- Hero -->
   <section class="hero">
@@ -80,13 +185,13 @@
       </div>
       <div class="hero-art">
         <div class="tilt-card glass">
-          <img src="https://i.postimg.cc/9fwG4fDx/Mochi0144.jpg" alt="Mochi" />
+          <img src="https://i.postimg.cc/9fwG4fDx/Mochi0144.jp" alt="Mochi" />
         </div>
         <div class="tilt-card glass delay-1">
-          <img src="https://i.postimg.cc/6qpP19Ck/Mochi0002.jpg" alt="Mochi" />
+          <img src="https://i.postimg.cc/6qpP19Ck/Mochi0002.jp" alt="Mochi" />
         </div>
         <div class="tilt-card glass delay-2">
-          <img src="https://i.postimg.cc/8CsyBgL9/427265a82192.gif" alt="Mochi" />
+          <img src="https://i.postimg.cc/8CsyBgL9/427265a82192.gi" alt="Mochi" />
         </div>
       </div>
     </div>
@@ -192,8 +297,8 @@
     </div>
   </footer>
 
-  <!-- Modals: Cart, Login, Register, How -->
-  <div id="cart-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+  <!-- Modals -->
+  <div id="cart-modal" class="modal hidden">
     <div class="modal-backdrop" data-close="cart"></div>
     <div class="modal-card glass">
       <button class="close" data-close="cart" aria-label="ปิด">×</button>
@@ -206,7 +311,7 @@
     </div>
   </div>
 
-  <div id="login-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="login-modal" class="modal hidden">
     <div class="modal-backdrop" data-close="login"></div>
     <div class="modal-card glass">
       <button class="close" data-close="login" aria-label="ปิด">×</button>
@@ -224,7 +329,7 @@
     </div>
   </div>
 
-  <div id="register-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="register-modal" class="modal hidden">
     <div class="modal-backdrop" data-close="register"></div>
     <div class="modal-card glass">
       <button class="close" data-close="register" aria-label="ปิด">×</button>
@@ -242,7 +347,7 @@
     </div>
   </div>
 
-  <div id="how-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="how-modal" class="modal hidden">
     <div class="modal-backdrop" data-close="how"></div>
     <div class="modal-card glass">
       <button class="close" data-close="how" aria-label="ปิด">×</button>
@@ -259,10 +364,36 @@
   <!-- Icons & JS -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <script type="module" src="app.js"></script>
-
   <script>
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const menuOptions = document.getElementById("menu-options");
+    menuToggle.addEventListener("click", () => {
+      menuOptions.classList.toggle("hidden");
+    });
+
+    const puzzleOverlay = document.getElementById("puzzle-overlay");
+    const puzzleContainer = document.getElementById("puzzle-container");
+    const puzzleCloseBtn = document.getElementById("puzzle-close");
+
+    function openPuzzle() {
+      puzzleOverlay.classList.remove("hidden");
+      puzzleContainer.classList.remove("hidden");
+      menuOptions.classList.add("hidden");
+    }
+
+    function closePuzzle() {
+      puzzleOverlay.classList.add("hidden");
+      puzzleContainer.classList.add("hidden");
+    }
+
+    puzzleCloseBtn.addEventListener("click", closePuzzle);
+
+    puzzleOverlay.addEventListener("click", e => {
+      if(e.target === puzzleOverlay) closePuzzle();
+    });
   </script>
 </body>
 </html>
