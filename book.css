@@ -1,0 +1,62 @@
+/* ===== Book Layout ===== */
+#book-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  height: 90vh; /* สูงเกือบเต็มจอ */
+  background: #111;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+}
+
+.book-page {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.book-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ทำให้เต็มขนาด */
+  display: block;
+}
+
+.book-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 15px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.empty-book {
+  color: #aaa;
+  font-size: 18px;
+  text-align: center;
+  padding: 3rem;
+}
+
+#book-prev, #book-next {
+  margin: 20px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background .3s;
+}
+#book-prev:hover, #book-next:hover {
+  background: #555;
+}
