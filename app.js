@@ -399,7 +399,7 @@ const message = document.getElementById("message");
 const puzzleOverlay = document.getElementById("puzzle-overlay");
 const puzzleCloseBtn = document.getElementById("puzzle-close");
 
-const PUZZLE_IMG = "https://i.postimg.cc/RV0KGZQy/unnamed.jpg";
+const PUZZLE_IMG = "https://i.postimg.cc/8CsyBgL9/427265a82192.gif";
 const ROWS = 3;
 const COLS = 3;
 const PIECE_SIZE = 100;

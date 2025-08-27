@@ -343,3 +343,110 @@ select.input:focus { border: 1px solid var(--brand); background: rgba(124,92,255
   #puzzle{ grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); }
   .piece{ width: 70px; height: 70px; background-size: 210px 210px; }
 }
+
+    /* ปุ่มเมนู */
+    #menu-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #7c5cff;
+      color: #fff;
+      font-size: 20px;
+      padding: 12px 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: background 0.3s, transform 0.2s;
+    }
+    #menu-toggle:hover {
+      background: #9d7cff;
+      transform: scale(1.1);
+    }
+
+    /* กล่องเมนู */
+    #menu-options {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background: rgba(30,30,30,0.95);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 9998;
+    }
+    #menu-options button,
+    #menu-options a {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: left;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    #menu-options button:hover,
+    #menu-options a:hover {
+      background: #555;
+    }
+
+    /* ซ่อน */
+    .hidden {
+      display: none;
+    }
+
+    /* Puzzle container */
+    #puzzle-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+      background: rgba(11,18,26,0.95);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      display: grid;
+      justify-items: center;
+      align-items: center;
+    }
+    #puzzle-container.hidden {
+      display: none !important;
+    }
+    #puzzle-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 99997;
+    }
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 4px;
+      position: relative;
+      z-index: 99999;
+    }
+    .piece {
+      width: 100px;
+      height: 100px;
+      cursor: grab;
+      background-size: 300px 300px;
+      border: 1px solid #fff;
+      z-index: 2;
+    }
+    #message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ffd166;
+      z-index: 2;
+    }
