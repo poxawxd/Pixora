@@ -32,13 +32,15 @@
         <button id="btn-login" class="btn primary">เข้าสู่ระบบ</button>
         <button id="btn-register" class="btn outline">สมัครสมาชิก</button>
 
+        <!-- Admin button -->
         <button id="btn-admin" class="btn primary hidden">หน้า Admin</button>
 
+        <!-- User menu -->
         <div id="user-menu" class="user-menu hidden">
           <img id="user-avatar" class="avatar" alt="avatar" />
           <div class="user-info">
-            <span id="user-name" class="user-name"></span>
-            <span id="user-level" class="user-level muted"></span>
+          <span id="user-name" class="user-name"></span>
+          <span id="user-level" class="user-level muted"></span>
           </div>
           <a href="order.html" class="btn primary" id="btn-my-orders">คำสั่งซื้อของฉัน</a>
           <button id="btn-logout" class="btn subtle">ออกจากระบบ</button>
@@ -51,21 +53,6 @@
       </div>
     </div>
   </header>
-
-<!-- ปุ่มเปิด puzzle -->
-<button id="btn-puzzle" class="btn primary" style="position:fixed; bottom:20px; right:20px; z-index:9999;">
-  เปิด Jigsaw Puzzle
-</button>
-
-<!-- Overlay สำหรับคลิกรอบนอก -->
-<div id="puzzle-overlay" class="hidden"></div>
-
-<!-- container puzzle -->
-<div id="puzzle-container" class="hidden">
-  <button id="puzzle-close" class="btn subtle">× ปิด</button>
-  <div id="puzzle"></div>
-  <div id="message"></div>
-</div> 
 
   <!-- Hero -->
   <section class="hero">
@@ -192,7 +179,7 @@
     </div>
   </footer>
 
-  <!-- Modals: Cart, Login, Register, How -->
+  <!-- Cart Modal -->
   <div id="cart-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-backdrop" data-close="cart"></div>
     <div class="modal-card glass">
@@ -206,6 +193,7 @@
     </div>
   </div>
 
+  <!-- Login Modal -->
   <div id="login-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-backdrop" data-close="login"></div>
     <div class="modal-card glass">
@@ -224,6 +212,7 @@
     </div>
   </div>
 
+  <!-- Register Modal -->
   <div id="register-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-backdrop" data-close="register"></div>
     <div class="modal-card glass">
@@ -242,6 +231,7 @@
     </div>
   </div>
 
+  <!-- How Modal -->
   <div id="how-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-backdrop" data-close="how"></div>
     <div class="modal-card glass">
@@ -256,13 +246,24 @@
     </div>
   </div>
 
-  <!-- Icons & JS -->
+  <!-- ✅ Image Lightbox Modal -->
+  <div id="lightbox-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="lightbox"></div>
+    <div class="modal-card glass lightbox-card">
+      <button class="close" data-close="lightbox" aria-label="ปิด">×</button>
+      <img id="lightbox-img" src="" alt="Full view" />
+    </div>
+  </div>
+
+  <!-- Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <script type="module" src="app.js"></script>
-
-  <script>
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
+
+<script>
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+</script>
+

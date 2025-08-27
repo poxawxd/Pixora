@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixora — คำสั่งซื้อของฉัน</title>
+  <link rel="stylesheet" href="order.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-logo">P</span>
+        <span class="brand-name">Pixora</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#gallery">แกลเลอรี</a>
+        <a href="index.html#pricing">แพ็กเกจ</a>
+        <a href="index.html#faq">คำถามที่พบบ่อย</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <section class="section">
+    <div class="container">
+      <h2>คำสั่งซื้อของฉัน</h2>
+      <p>ตรวจสอบสถานะคำสั่งซื้อ และดาวน์โหลดไฟล์หลังชำระเงินเรียบร้อย</p>
+    </div>
+  </section>
+
+  <!-- Orders Table -->
+  <section class="section">
+    <div class="container">
+      <table class="orders-table" id="orders-container">
+        <thead>
+          <tr>
+            <th>ลำดับ</th>
+            <th>ชื่อสินค้า</th>
+            <th>วันที่สั่งซื้อ</th>
+            <th>ราคา</th>
+            <th>สถานะ</th>
+            <th>ดาวน์โหลด</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS จะ generate rows -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script type="module" src="order.js"></script>
+</body>
+</html>
+
+<script>
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+</script>
+
