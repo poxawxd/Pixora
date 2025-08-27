@@ -41,10 +41,10 @@ function renderBook(orders) {
     if (order.status !== "approved") return; // เฉพาะคำสั่งซื้อ approved
 
     order.items?.forEach(item => {
-      // หา product จาก product.js
       const product = PRODUCTS.find(p => p.id === item.id);
       const imageSrc = product?.src || item.url || '';
 
+      // 1 หน้า = 1 สินค้าเต็ม ๆ
       const pageHTML = `
         <div class="book-item">
           <img src="${imageSrc}" alt="${item.title}" />
@@ -55,9 +55,7 @@ function renderBook(orders) {
           </div>
         </div>
       `;
-
-      // แต่ละสินค้า = 1 หน้า
-      pages.push(`<div class="book-page-content">${pageHTML}</div>`);
+      pages.push(`<div class="book-page">${pageHTML}</div>`);
     });
   });
 
@@ -72,26 +70,19 @@ function updateBookView() {
     bookContainer.innerHTML = `<div class="empty-book">คุณยังไม่มี Book Gallery</div>`;
     return;
   }
-
-  const leftPage = pages[currentPage] || '';
-  const rightPage = pages[currentPage + 1] || '';
-
-  bookContainer.innerHTML = `
-    <div class="book-page left">${leftPage}</div>
-    <div class="book-page right">${rightPage}</div>
-  `;
+  bookContainer.innerHTML = pages[currentPage];
 }
 
 // ปุ่ม Next / Prev
 btnNext.addEventListener("click", () => {
-  if (currentPage + 2 < pages.length) {
-    currentPage += 2;
+  if (currentPage + 1 < pages.length) {
+    currentPage++;
     updateBookView();
   }
 });
 btnPrev.addEventListener("click", () => {
-  if (currentPage - 2 >= 0) {
-    currentPage -= 2;
+  if (currentPage - 1 >= 0) {
+    currentPage--;
     updateBookView();
   }
 });
