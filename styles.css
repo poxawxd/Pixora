@@ -112,7 +112,7 @@ body{
 
 /* ===== Sections ===== */
 .section {
-  padding-top: 150px;   /* ปรับด้านบนตามต้องการ */
+  padding-top: 78px;   /* ปรับด้านบนตามต้องการ */
   padding-bottom: 60px; /* ด้านล่างยังคงเท่าเดิม */
 }
 .section.alt{ background: radial-gradient(800px 300px at 50% -20%, rgba(255,209,102,.12), transparent 60%); }
