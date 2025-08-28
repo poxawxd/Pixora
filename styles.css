@@ -111,7 +111,10 @@ body{
 @keyframes float{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-10px); } }
 
 /* ===== Sections ===== */
-.section{ padding: 56px 0; }
+.section {
+  padding-top: 150px;   /* ปรับด้านบนตามต้องการ */
+  padding-bottom: 60px; /* ด้านล่างยังคงเท่าเดิม */
+}
 .section.alt{ background: radial-gradient(800px 300px at 50% -20%, rgba(255,209,102,.12), transparent 60%); }
 .section-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
 .section-head h2{ margin:0; }
@@ -127,22 +130,26 @@ body{
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
 }
-.card{
+.card .thumb {
+  width: 100%;
+  aspect-ratio: 4/3; /* หรือ 1/1 ถ้าต้องการสี่เหลี่ยมจัตุรัส */
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid rgba(255,255,255,0.08); /* เพิ่มเส้นแบ่ง */
+  flex-shrink: 0; /* ป้องกันการยืด/ยุบ */
+}
+.card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* ไม่ดันปุ่มลงข้างล่าง */
   background: var(--card);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  overflow:hidden;
-  min-height: 360px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 300px;
+  gap: 0; /* ลดช่องว่างภายใน */
 }
-.card .thumb{
-  width:100%;
-  aspect-ratio: 4/3;
-  object-fit:cover;
-  display:block;
-}
+
 .card .meta{
   display:flex;
   flex-direction: column;
@@ -478,4 +485,47 @@ select.input:focus { border: 1px solid var(--brand); background: rgba(124,92,255
 /* ===== Hidden Utility ===== */
 .hidden {
   display: none !important;
+}
+
+/* ===== Pagination Styles ===== */
+.pagination {
+  margin-top: 1.5rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.page-btn {
+  padding: 0.45rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f0f0f0;
+  color: #333;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+}
+
+.page-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.page-btn.active {
+  background: #333;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
 }

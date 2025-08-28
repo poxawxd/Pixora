@@ -46,6 +46,7 @@ const toast = msg => {
 
 // ===== State =====
 const state = { user: null, cart: [] };
+let filteredResults = []; // สำหรับ pagination
 
 // ===== Elements =====
 const grid = $('#grid');
@@ -55,6 +56,7 @@ const sort = $('#sort');
 const cartBtn = $('#btn-cart');
 const userLevelEl = $('#user-level');
 $('#year').textContent = new Date().getFullYear();
+const paginationEl = document.getElementById('pagination'); // ต้องมี div#pagination ใน HTML
 
 // Auth elements
 const btnLogin = $('#btn-login');
@@ -185,20 +187,38 @@ function render(products){
   });
 }
 
+// ===== Pagination =====
+function renderPage(page){
+  const perPage = 8;
+  const start = (page-1)*perPage;
+  const paginated = filteredResults.slice(start, start+perPage);
+  render(paginated);
+
+  const totalPages = Math.ceil(filteredResults.length/perPage);
+  paginationEl.innerHTML = '';
+  for(let i=1;i<=totalPages;i++){
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.disabled = i===page;
+    btn.addEventListener('click',()=>renderPage(i));
+    paginationEl.appendChild(btn);
+  }
+}
+
 // ===== Filters/Search =====
 function applyFilters(){
-  let results = [...PRODUCTS];
+  filteredResults = [...PRODUCTS];
   const q = (search.value || '').toLowerCase().trim();
   const cat = category.value;
   const sortBy = sort.value;
 
-  if(q) results = results.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-  if(cat!=='all') results = results.filter(p => p.category.toLowerCase()===cat.toLowerCase());
+  if(q) filteredResults = filteredResults.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  if(cat!=='all') filteredResults = filteredResults.filter(p => p.category.toLowerCase()===cat.toLowerCase());
 
-  if(sortBy==='price-asc') results.sort((a,b)=>a.price-b.price);
-  if(sortBy==='price-desc') results.sort((a,b)=>b.price-a.price);
+  if(sortBy==='price-asc') filteredResults.sort((a,b)=>a.price-b.price);
+  if(sortBy==='price-desc') filteredResults.sort((a,b)=>b.price-a.price);
 
-  render(results);
+  renderPage(1); // เริ่มหน้าแรก
 }
 [search, category, sort].forEach(el=>el.addEventListener('input',applyFilters));
 
@@ -391,6 +411,10 @@ document.addEventListener('click', e => {
 // ===== Initialize =====
 applyFilters();
 
+// ===== Jigsaw Puzzle =====
+//... (ส่วน puzzle ของคุณคงเดิม)
+
+
 // ===== Jigsaw Puzzle (Desktop + Mobile Touch) =====
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -515,3 +539,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
