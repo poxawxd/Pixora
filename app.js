@@ -392,116 +392,126 @@ document.addEventListener('click', e => {
 applyFilters();
 
 // ===== Jigsaw Puzzle (Desktop + Mobile Touch) =====
-const menuPuzzleBtn = document.querySelector('#menu-options button');
-const puzzleContainer = document.getElementById("puzzle-container");
-const puzzle = document.getElementById("puzzle");
-const message = document.getElementById("message");
-const puzzleOverlay = document.getElementById("puzzle-overlay");
-const puzzleCloseBtn = document.getElementById("puzzle-close");
+document.addEventListener('DOMContentLoaded', () => {
 
-const PUZZLE_IMG = "https://i.postimg.cc/8CsyBgL9/427265a82192.gif";
-const ROWS = 3;
-const COLS = 3;
-const PIECE_SIZE = 100;
+  // ===== Elements =====
+  const menuPuzzleBtn = document.getElementById('btn-puzzle');
+  const puzzleContainer = document.getElementById("puzzle-container");
+  const puzzle = document.getElementById("puzzle");
+  const message = document.getElementById("message");
+  const puzzleOverlay = document.getElementById("puzzle-overlay");
+  const puzzleCloseBtn = document.getElementById("puzzle-close");
+  const menuOptions = document.getElementById("menu-options");
 
-let dragged = null;
-let touchDragged = null;
+  const PUZZLE_IMG = "https://i.postimg.cc/8CsyBgL9/427265a82192.gif";
+  const ROWS = 3;
+  const COLS = 3;
+  const PIECE_SIZE = 100;
 
-function openPuzzle() {
-  puzzleContainer.classList.remove("hidden");
-  puzzleOverlay.classList.add("active");
-  initPuzzle();
-}
+  let dragged = null;
+  let touchDragged = null;
 
-function closePuzzle() {
-  puzzleContainer.classList.add("hidden");
-  puzzleOverlay.classList.remove("active");
-  puzzle.innerHTML = "";
-  message.textContent = "";
-}
-
-// เปิด puzzle
-menuPuzzleBtn.addEventListener("click", openPuzzle);
-// ปุ่ม close
-puzzleCloseBtn.addEventListener("click", closePuzzle);
-
-// คลิกรอบนอกปิด puzzle
-puzzleOverlay.addEventListener("click", e => {
-  if(e.target === puzzleOverlay) closePuzzle();
-});
-
-// ===== Init Puzzle =====
-function initPuzzle() {
-  puzzle.innerHTML = "";
-  const pieces = [];
-
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const div = document.createElement("div");
-      div.classList.add("piece");
-      div.style.width = `${PIECE_SIZE}px`;
-      div.style.height = `${PIECE_SIZE}px`;
-      div.style.backgroundImage = `url(${PUZZLE_IMG})`;
-      div.style.backgroundSize = `${COLS*PIECE_SIZE}px ${ROWS*PIECE_SIZE}px`;
-      div.style.backgroundPosition = `-${c*PIECE_SIZE}px -${r*PIECE_SIZE}px`;
-      div.dataset.correct = r * COLS + c;  // ตำแหน่งที่ถูกต้อง
-      div.dataset.index = r * COLS + c;    // ตำแหน่งปัจจุบัน (จะสลับ)
-      div.style.touchAction = "none";
-      pieces.push(div);
-    }
+  // ===== Open / Close Puzzle =====
+  function openPuzzle() {
+    puzzleOverlay.classList.remove("hidden");
+    puzzleContainer.classList.remove("hidden");
+    menuOptions.classList.add("hidden");
+    initPuzzle();
   }
 
-  // สุ่มตำแหน่ง
-  pieces.sort(() => Math.random() - 0.5);
-  pieces.forEach((p, i) => { 
-    p.dataset.index = i; 
-    puzzle.appendChild(p); 
+  function closePuzzle() {
+    puzzleOverlay.classList.add("hidden");
+    puzzleContainer.classList.add("hidden");
+    puzzle.innerHTML = "";
+    message.textContent = "";
+  }
+
+  // Events
+  menuPuzzleBtn.addEventListener("click", openPuzzle);
+  puzzleCloseBtn.addEventListener("click", closePuzzle);
+
+  // คลิกรอบนอก overlay ปิด puzzle
+  puzzleOverlay.addEventListener("click", e => {
+     if(e.target === puzzleOverlay) closePuzzle();
   });
 
-  // Desktop drag
-  pieces.forEach(p => {
-    p.draggable = true;
-    p.addEventListener("dragstart", e => dragged = p);
-    p.addEventListener("dragover", e => e.preventDefault());
-    p.addEventListener("drop", e => {
-      if(dragged && dragged !== p){
-        swapPieces(dragged, p);
-        checkPuzzleWin();
+  // ===== Menu Toggle =====
+  const menuToggle = document.getElementById('menu-toggle');
+  menuToggle.addEventListener("click", () => menuOptions.classList.toggle("hidden"));
+
+  // ===== Init Puzzle =====
+  function initPuzzle() {
+    puzzle.innerHTML = "";
+    const pieces = [];
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const div = document.createElement("div");
+        div.classList.add("piece");
+        div.style.width = `${PIECE_SIZE}px`;
+        div.style.height = `${PIECE_SIZE}px`;
+        div.style.backgroundImage = `url(${PUZZLE_IMG})`;
+        div.style.backgroundSize = `${COLS*PIECE_SIZE}px ${ROWS*PIECE_SIZE}px`;
+        div.style.backgroundPosition = `-${c*PIECE_SIZE}px -${r*PIECE_SIZE}px`;
+        div.dataset.correct = r * COLS + c;
+        div.dataset.index = r * COLS + c;
+        div.style.touchAction = "none";
+        pieces.push(div);
       }
+    }
+
+    // สุ่มตำแหน่ง
+    pieces.sort(() => Math.random() - 0.5);
+    pieces.forEach((p, i) => { 
+      p.dataset.index = i; 
+      puzzle.appendChild(p); 
     });
-  });
 
-  // Mobile touch
-  pieces.forEach(p => {
-    p.addEventListener("touchstart", e => { touchDragged = e.target; });
-    p.addEventListener("touchmove", e => e.preventDefault());
-    p.addEventListener("touchend", e => {
-      if(!touchDragged) return;
-      const touch = e.changedTouches[0];
-      const target = document.elementFromPoint(touch.clientX, touch.clientY);
-      if(target && target.classList.contains("piece") && target !== touchDragged){
-        swapPieces(touchDragged, target);
-        checkPuzzleWin();
-      }
-      touchDragged = null;
+    // Desktop drag
+    pieces.forEach(p => {
+      p.draggable = true;
+      p.addEventListener("dragstart", e => dragged = p);
+      p.addEventListener("dragover", e => e.preventDefault());
+      p.addEventListener("drop", e => {
+        if(dragged && dragged !== p){
+          swapPieces(dragged, p);
+          checkPuzzleWin();
+        }
+      });
     });
-  });
-}
 
-function swapPieces(a, b) {
-  // สลับ backgroundPosition
-  const tempBg = a.style.backgroundPosition;
-  a.style.backgroundPosition = b.style.backgroundPosition;
-  b.style.backgroundPosition = tempBg;
+    // Mobile touch
+    pieces.forEach(p => {
+      p.addEventListener("touchstart", e => { touchDragged = e.target; });
+      p.addEventListener("touchmove", e => e.preventDefault());
+      p.addEventListener("touchend", e => {
+        if(!touchDragged) return;
+        const touch = e.changedTouches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        if(target && target.classList.contains("piece") && target !== touchDragged){
+          swapPieces(touchDragged, target);
+          checkPuzzleWin();
+        }
+        touchDragged = null;
+      });
+    });
+  }
 
-  // สลับ dataset.index (ตำแหน่งปัจจุบัน)
-  const tempIdx = a.dataset.index;
-  a.dataset.index = b.dataset.index;
-  b.dataset.index = tempIdx;
-}
+  // ===== Swap & Check =====
+  function swapPieces(a, b) {
+    const tempBg = a.style.backgroundPosition;
+    a.style.backgroundPosition = b.style.backgroundPosition;
+    b.style.backgroundPosition = tempBg;
 
-function checkPuzzleWin() {
-  const pieces = puzzle.querySelectorAll(".piece");
-  const won = [...pieces].every(p => p.dataset.index === p.dataset.correct);
-  message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
-}
+    const tempIdx = a.dataset.index;
+    a.dataset.index = b.dataset.index;
+    b.dataset.index = tempIdx;
+  }
+
+  function checkPuzzleWin() {
+    const pieces = puzzle.querySelectorAll(".piece");
+    const won = [...pieces].every(p => p.dataset.index === p.dataset.correct);
+    message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
+  }
+
+});

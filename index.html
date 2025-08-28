@@ -52,7 +52,7 @@
   <!-- ปุ่มเมนู -->
   <div id="menu-toggle">☰</div>
   <div id="menu-options" class="hidden">
-    <button onclick="openPuzzle()">🧩 Jigsaw Puzzle</button>
+    <button id="btn-puzzle">🧩 Jigsaw Puzzle</button>
     <a href="book.html">📖 Book Gallery</a>
   </div>
 
@@ -256,36 +256,5 @@
   <!-- Icons & JS -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <script type="module" src="app.js"></script>
-  <script>
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    const menuToggle = document.getElementById("menu-toggle");
-    const menuOptions = document.getElementById("menu-options");
-    menuToggle.addEventListener("click", () => {
-      menuOptions.classList.toggle("hidden");
-    });
-
-    const puzzleOverlay = document.getElementById("puzzle-overlay");
-    const puzzleContainer = document.getElementById("puzzle-container");
-    const puzzleCloseBtn = document.getElementById("puzzle-close");
-
-    function openPuzzle() {
-      puzzleOverlay.classList.remove("hidden");
-      puzzleContainer.classList.remove("hidden");
-      menuOptions.classList.add("hidden");
-    }
-
-    function closePuzzle() {
-      puzzleOverlay.classList.add("hidden");
-      puzzleContainer.classList.add("hidden");
-    }
-
-    puzzleCloseBtn.addEventListener("click", closePuzzle);
-
-    puzzleOverlay.addEventListener("click", e => {
-      if(e.target === puzzleOverlay) closePuzzle();
-    });
-  </script>
 </body>
 </html>
