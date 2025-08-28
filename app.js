@@ -411,10 +411,6 @@ document.addEventListener('click', e => {
 // ===== Initialize =====
 applyFilters();
 
-// ===== Jigsaw Puzzle =====
-//... (ส่วน puzzle ของคุณคงเดิม)
-
-
 // ===== Jigsaw Puzzle (Desktop + Mobile Touch) =====
 document.addEventListener('DOMContentLoaded', () => {
 
