@@ -8,7 +8,7 @@ import {
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { PRODUCTS } from './product.js';
 
-// ===== Firebase =====
+// ================= Firebase =================
 const firebaseConfig = {
   apiKey: "AIzaSyCHq_JNCPMJJOQbC5wyvsEguII3y8TjYJA",
   authDomain: "pixora-e368a.firebaseapp.com",
@@ -23,122 +23,79 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 auth.languageCode = 'th';
 
-// ===== Helpers =====
+// ================= Helpers =================
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const money = n => Number(n).toLocaleString('th-TH', { maximumFractionDigits: 0 });
 
 const toast = msg => {
   const el = document.createElement('div');
+  Object.assign(el.style, {
+    position: 'fixed', bottom: '16px', left: '50%',
+    transform: 'translateX(-50%)', padding: '.6rem 1rem',
+    borderRadius: '12px', border: '1px solid rgba(255,255,255,.18)',
+    zIndex: 9999
+  });
   el.className = 'glass';
-  el.style.position = 'fixed';
-  el.style.bottom = '16px';
-  el.style.left = '50%';
-  el.style.transform = 'translateX(-50%)';
-  el.style.padding = '.6rem 1rem';
-  el.style.borderRadius = '12px';
-  el.style.border = '1px solid rgba(255,255,255,.18)';
-  el.style.zIndex = 9999;
   el.textContent = msg;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2200);
 };
 
-// ===== State =====
+// ================= State =================
 const state = { user: null, cart: [] };
-let filteredResults = []; // สำหรับ pagination
+let filteredResults = [];
 
-// ===== Elements =====
-const grid = $('#grid');
-const search = $('#search');
-const category = $('#category');
-const sort = $('#sort');
-const cartBtn = $('#btn-cart');
-const userLevelEl = $('#user-level');
-$('#year').textContent = new Date().getFullYear();
-const paginationEl = document.getElementById('pagination'); // ต้องมี div#pagination ใน HTML
-
-// Auth elements
-const btnLogin = $('#btn-login');
-const btnRegister = $('#btn-register');
-const userMenu = $('#user-menu');
-const userName = $('#user-name');
-const userAvatar = $('#user-avatar');
-const btnLogout = $('#btn-logout');
-
-// Admin button
+// ================= Elements =================
+const grid = $('#grid'), search = $('#search'), category = $('#category'), sort = $('#sort');
+const cartBtn = $('#btn-cart'), cartCount = $('#cart-count'), cartItems = $('#cart-items'), cartTotal = $('#cart-total'), btnCheckout = $('#btn-checkout');
+const userLevelEl = $('#user-level'), paginationEl = $('#pagination');
+const btnLogin = $('#btn-login'), btnRegister = $('#btn-register'), userMenu = $('#user-menu');
+const userName = $('#user-name'), userAvatar = $('#user-avatar'), btnLogout = $('#btn-logout');
 let adminBtn = $('#btn-admin');
+const loginModal = $('#login-modal'), formLogin = $('#form-login'), loginEmail = $('#login-email'), loginPassword = $('#login-password'), loginMessage = $('#login-message');
+const registerModal = $('#register-modal'), formRegister = $('#form-register'), registerEmail = $('#register-email'), registerPassword = $('#register-password'), registerMessage = $('#register-message');
+const howModal = $('#how-modal'), btnHow = $('#btn-how');
+const lightboxModal = $('#lightbox-modal'), lightboxImg = $('#lightbox-img');
+$('#year').textContent = new Date().getFullYear();
 
-// Login/Register Modals
-const loginModal = $('#login-modal');
-const formLogin = $('#form-login');
-const loginEmail = $('#login-email');
-const loginPassword = $('#login-password');
-const loginMessage = $('#login-message');
-
-const registerModal = $('#register-modal');
-const formRegister = $('#form-register');
-const registerEmail = $('#register-email');
-const registerPassword = $('#register-password');
-const registerMessage = $('#register-message');
-
-// How-to Modal
-const howModal = $('#how-modal');
-const btnHow = $('#btn-how');
-
-// Cart elements
-const cartCount = $('#cart-count');
-const cartItems = $('#cart-items');
-const cartTotal = $('#cart-total');
-const btnCheckout = $('#btn-checkout');
-
-// Lightbox
-const lightboxModal = $('#lightbox-modal');
-const lightboxImg = $('#lightbox-img');
-
-// ===== Modal Functions =====
-function openModal(modal){ modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); }
-function closeModal(modal){ modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); }
-
+// ================= Modal Functions =================
+const openModal = modal => { modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); };
+const closeModal = modal => { modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); };
 $$('.close').forEach(btn => btn.addEventListener('click', e => closeModal(btn.closest('.modal'))));
 $$('.modal-backdrop').forEach(back => back.addEventListener('click', e => closeModal(back.closest('.modal'))));
-document.addEventListener('keydown', e => {
-  if(e.key==='Escape') $$('div.modal').forEach(m=>{if(!m.classList.contains('hidden')) closeModal(m)});
-});
+document.addEventListener('keydown', e => { if(e.key==='Escape') $$('div.modal').forEach(m => !m.classList.contains('hidden') && closeModal(m)); });
+btnHow.addEventListener('click', () => openModal(howModal));
 
-// How modal
-btnHow.addEventListener('click', ()=>openModal(howModal));
-
-// ===== Detail Modal =====
+// ================= Detail Modal =================
 const detailModal = document.createElement('div');
 detailModal.className = 'modal hidden';
 detailModal.innerHTML = `
-  <div class="modal-backdrop" style="position:fixed; inset:0; background:rgba(0,0,0,.5);"></div>
-  <div class="modal-content glass" style="padding:1rem; max-width:400px; margin:10vh auto; border-radius:12px; position:relative;">
-    <span class="close" style="position:absolute; top:8px; right:8px; cursor:pointer;">✕</span>
+  <div class="modal-backdrop"></div>
+  <div class="modal-content glass">
+    <span class="close">✕</span>
     <h2 id="detail-title"></h2>
-    <img id="detail-img" style="width:100%; margin:8px 0;" />
+    <img id="detail-img"/>
     <p id="detail-text"></p>
-  </div>
-`;
+  </div>`;
 document.body.appendChild(detailModal);
+
 const detailTitle = $('#detail-title', detailModal);
 const detailImg = $('#detail-img', detailModal);
 const detailText = $('#detail-text', detailModal);
 
-// ปุ่ม close และ backdrop
 detailModal.querySelector('.close').addEventListener('click', () => closeModal(detailModal));
 detailModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(detailModal));
 
-function showDetailModal(product){
+const showDetailModal = product => {
   detailTitle.textContent = product.title;
   detailImg.src = product.src;
   detailText.textContent = product.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
   openModal(detailModal);
-}
+};
 
-// ===== Render Products =====
-function render(products){
+// ================= Render Products =================
+const render = products => {
   grid.innerHTML = '';
   const userLevel = state.user?.level || 'Basic';
   const filtered = products.filter(p => {
@@ -153,143 +110,108 @@ function render(products){
     card.className = 'card glass';
     card.innerHTML = `
       <span class="tag">${p.category}</span>
-      <div class="thumb-wrapper" style="position:relative;">
-        <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy" />
-        <button class="btn detail-btn" style="
-          position:absolute;
-          top:8px;
-          right:8px;
-          padding:.3rem .5rem;
-          font-size:.75rem;
-          border:none;
-          border-radius:6px;
-          background:rgba(0,0,0,.6);
-          color:white;
-          cursor:pointer;
-        ">ดูรายละเอียด</button>
+      <div class="thumb-wrapper">
+        <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy"/>
+        <button class="btn detail-btn">ดูรายละเอียด</button>
       </div>
       <div class="meta">
-        <div>
-          <div class="title">${p.title}</div>
-          <div class="muted">฿${money(p.price)}</div>
-        </div>
+        <div><div class="title">${p.title}</div><div class="muted">฿${money(p.price)}</div></div>
         <div class="buttons">
           <button class="btn primary" data-buy="${p.id}">สั่งซื้อเลย</button>
           <button class="btn outline" data-add="${p.id}">เพิ่มลงตะกร้า</button>
         </div>
-      </div>
-    `;
+      </div>`;
     grid.appendChild(card);
 
-    card.querySelector('.detail-btn').addEventListener('click', () => {
-      showDetailModal(p);
-    });
+    card.querySelector('.detail-btn').addEventListener('click', () => showDetailModal(p));
   });
-}
+};
 
-// ===== Pagination =====
-function renderPage(page){
+// ================= Pagination =================
+const renderPage = page => {
   const perPage = 8;
   const start = (page-1)*perPage;
-  const paginated = filteredResults.slice(start, start+perPage);
-  render(paginated);
+  render(filteredResults.slice(start, start+perPage));
 
-  const totalPages = Math.ceil(filteredResults.length/perPage);
   paginationEl.innerHTML = '';
+  const totalPages = Math.ceil(filteredResults.length / perPage);
   for(let i=1;i<=totalPages;i++){
     const btn = document.createElement('button');
     btn.textContent = i;
     btn.disabled = i===page;
-    btn.addEventListener('click',()=>renderPage(i));
+    btn.addEventListener('click', ()=>renderPage(i));
     paginationEl.appendChild(btn);
   }
-}
+};
 
-// ===== Filters/Search =====
-function applyFilters(){
+// ================= Filters/Search =================
+const applyFilters = () => {
   filteredResults = [...PRODUCTS];
   const q = (search.value || '').toLowerCase().trim();
   const cat = category.value;
   const sortBy = sort.value;
 
   if(q) filteredResults = filteredResults.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-  if(cat!=='all') filteredResults = filteredResults.filter(p => p.category.toLowerCase()===cat.toLowerCase());
+  if(cat !== 'all') filteredResults = filteredResults.filter(p => p.category.toLowerCase() === cat.toLowerCase());
 
-  if(sortBy==='price-asc') filteredResults.sort((a,b)=>a.price-b.price);
-  if(sortBy==='price-desc') filteredResults.sort((a,b)=>b.price-a.price);
+  if(sortBy === 'price-asc') filteredResults.sort((a,b)=>a.price-b.price);
+  if(sortBy === 'price-desc') filteredResults.sort((a,b)=>b.price-a.price);
 
-  renderPage(1); // เริ่มหน้าแรก
-}
-[search, category, sort].forEach(el=>el.addEventListener('input',applyFilters));
+  renderPage(1);
+};
+[search, category, sort].forEach(el => el.addEventListener('input', applyFilters));
 
-// ===== Cart Functions =====
-function updateCartUI(){
+// ================= Cart =================
+const updateCartUI = () => {
   cartCount.textContent = state.cart.reduce((sum,i)=>sum+i.qty,0);
   cartItems.innerHTML = '';
   let total = 0;
-  state.cart.forEach(item=>{
+  state.cart.forEach(item => {
     total += item.price * item.qty;
     const row = document.createElement('div');
     row.className = 'cart-row';
-    const imgHTML = item.isPackage ? '' : `<img src="${item.src}" alt="${item.title}" />`;
-    row.innerHTML = `
-      ${imgHTML}
+    row.innerHTML = `${!item.isPackage? `<img src="${item.src}" alt="${item.title}"/>` : '' }
       <div class="cart-title">${item.title}${item.isPackage?' (แพ็กเกจ)':''}</div>
-      <div class="cart-price">฿${money(item.price * item.qty)}</div>
-      <button class="cart-remove" data-remove="${item.id}">ลบ</button>
-    `;
+      <div class="cart-price">฿${money(item.price*item.qty)}</div>
+      <button class="cart-remove" data-remove="${item.id}">ลบ</button>`;
     cartItems.appendChild(row);
   });
   cartTotal.textContent = money(total);
-}
+};
 
-function addToCart(id){
+const addToCart = id => {
   const product = PRODUCTS.find(p=>p.id===id);
   if(!product) return;
   const existing = state.cart.find(i=>i.id===id);
-  if(existing) existing.qty+=1; else state.cart.push({...product, qty:1, isPackage:false});
+  existing ? existing.qty++ : state.cart.push({...product, qty:1, isPackage:false});
   updateCartUI();
   toast('เพิ่มลงตะกร้าแล้ว');
-}
+};
 
-// ===== Buy/Add Buttons =====
-document.addEventListener('click', e=>{
-  const addId = e.target.getAttribute('data-add');
-  const removeId = e.target.getAttribute('data-remove');
-  const buyId = e.target.getAttribute('data-buy');
-  const packageBtn = e.target.getAttribute('data-package');
+// ================= Buy/Add Buttons =================
+document.addEventListener('click', e => {
+  const addId = e.target.dataset.add;
+  const removeId = e.target.dataset.remove;
+  const buyId = e.target.dataset.buy;
+  const packageBtn = e.target.dataset.package;
 
   if(addId){
     if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนเพิ่มสินค้า'; return; }
     addToCart(addId);
   }
-
-  if(removeId){
-    state.cart = state.cart.filter(i=>i.id!==removeId);
-    updateCartUI();
-  }
-
-  if(buyId){
+  if(removeId){ state.cart = state.cart.filter(i=>i.id!==removeId); updateCartUI(); }
+  if(buyId){ 
     if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนสั่งซื้อ'; return; }
-    const product = PRODUCTS.find(p => p.id === buyId);
+    const product = PRODUCTS.find(p=>p.id===buyId);
     if(!product) return;
-    const orderData = { items: [{...product, qty:1, isPackage:false}], totalPrice: product.price };
-    sessionStorage.setItem('buyNow', JSON.stringify(orderData));
-    window.location.href = 'payment.html';
+    sessionStorage.setItem('buyNow', JSON.stringify({items:[{...product, qty:1, isPackage:false}], totalPrice:product.price}));
+    window.location.href='payment.html';
   }
-
   if(packageBtn){
     if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนซื้อแพ็กเกจ'; return; }
-    let price = 0;
-    if(packageBtn==='Standard') price=100;
-    if(packageBtn==='SpecialList') price=500;
+    let price = packageBtn==='Standard'?100:packageBtn==='SpecialList'?500:0;
     if(packageBtn==='Enterprise'){ window.open("https://t.me/ShiroiKJP", "_blank"); return; }
-
-    const orderData = {
-      items:[{ id:packageBtn, title:packageBtn, qty:1, price, isPackage:true }],
-      totalPrice: price
-    };
-    sessionStorage.setItem('buyNow', JSON.stringify(orderData));
+    sessionStorage.setItem('buyNow', JSON.stringify({items:[{id:packageBtn,title:packageBtn,qty:1,price,isPackage:true}], totalPrice:price}));
     window.location.href='payment.html';
   }
 });
@@ -299,240 +221,168 @@ cartBtn.addEventListener('click', ()=>openModal($('#cart-modal')));
 btnCheckout.addEventListener('click', ()=>{
   if(!state.user){ openModal(loginModal); loginMessage.textContent='โปรดเข้าสู่ระบบก่อนชำระเงิน'; return; }
   if(state.cart.length===0){ toast('ตะกร้าว่าง'); return; }
-  const orderData = {
-    items: state.cart.map(i => ({...i})),
-    totalPrice: state.cart.reduce((sum,i)=>sum+i.price*i.qty,0)
-  };
-  sessionStorage.setItem('buyNow', JSON.stringify(orderData));
+  sessionStorage.setItem('buyNow', JSON.stringify({items:state.cart,totalPrice:state.cart.reduce((sum,i)=>sum+i.price*i.qty,0)}));
   window.location.href='payment.html';
 });
 
-// ===== Header Auth Buttons =====
+// ================= Header Auth =================
 btnLogin.addEventListener('click', ()=>openModal(loginModal));
 btnRegister.addEventListener('click', ()=>openModal(registerModal));
 
-// ===== Login/Register =====
+// Login/Register
+const clearAuthForms = () => {
+  [loginEmail, loginPassword].forEach(i=>i.value=''); loginMessage.textContent='';
+  [registerEmail, registerPassword].forEach(i=>i.value=''); registerMessage.textContent='';
+};
+
 formLogin.addEventListener('submit', async e=>{
   e.preventDefault();
-  try{
-    await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
-    loginMessage.textContent = '';
-    toast('เข้าสู่ระบบสำเร็จ');
-    closeModal(loginModal);
-  }catch(err){
-    console.log(err);
-    loginMessage.textContent = 'รหัสผ่านผิดหรืออีเมลไม่ถูกต้อง โปรดลองใหม่';
-    toast('รหัสผ่านผิดหรืออีเมลไม่ถูกต้อง โปรดลองใหม่');
-  }
+  try{ await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value); toast('เข้าสู่ระบบสำเร็จ'); closeModal(loginModal); clearAuthForms(); }
+  catch(err){ loginMessage.textContent='รหัสผ่านผิดหรืออีเมลไม่ถูกต้อง'; toast('รหัสผ่านผิดหรืออีเมลไม่ถูกต้อง'); }
 });
 
 formRegister.addEventListener('submit', async e=>{
   e.preventDefault();
-  const email = registerEmail.value.trim();
-  const password = registerPassword.value;
-
-  if(!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)){
-    registerMessage.textContent = 'โปรดใช้ Gmail ในการสมัครเท่านั้น';
-    return;
-  }
-
-  try{
-    await createUserWithEmailAndPassword(auth, email, password);
-    registerMessage.textContent = '';
-    toast('สมัครสมาชิกสำเร็จ');
-    closeModal(registerModal);
-    openModal(loginModal);
-  }catch(err){
-    registerMessage.textContent = err.message;
-  }
+  const email = registerEmail.value.trim(); const password = registerPassword.value;
+  if(!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)){ registerMessage.textContent='โปรดใช้ Gmail ในการสมัครเท่านั้น'; return; }
+  try{ await createUserWithEmailAndPassword(auth,email,password); toast('สมัครสมาชิกสำเร็จ'); closeModal(registerModal); openModal(loginModal); clearAuthForms(); }
+  catch(err){ registerMessage.textContent=err.message; }
 });
 
-// ===== Logout =====
+// Logout
 btnLogout.addEventListener('click', async ()=>{
-  try{
-    await signOut(auth);
-    state.user=null;
-    userMenu.classList.add('hidden');
-    if(adminBtn) adminBtn.classList.add('hidden');
-    btnLogin.classList.remove('hidden');
-    btnRegister.classList.remove('hidden');
-    userLevelEl.textContent = 'Basic';
-    applyFilters();
-    toast('ออกจากระบบเรียบร้อยแล้ว');
-  }catch(err){ console.error(err); toast('เกิดข้อผิดพลาดในการออกจากระบบ'); }
+  try{ await signOut(auth); state.user=null; clearAuthForms(); userMenu.classList.add('hidden'); btnLogin.classList.remove('hidden'); btnRegister.classList.remove('hidden'); userLevelEl.textContent='Basic'; if(adminBtn) adminBtn.classList.add('hidden'); applyFilters(); toast('ออกจากระบบเรียบร้อยแล้ว'); }
+  catch(err){ console.error(err); toast('เกิดข้อผิดพลาดในการออกจากระบบ'); }
 });
 
-// ===== Auth State Observer =====
+// ================= Auth State =================
 onAuthStateChanged(auth, async user=>{
   state.user = user || null;
-
   if(user){
-    btnLogin.classList.add('hidden');
-    btnRegister.classList.add('hidden');
-    userMenu.classList.remove('hidden');
+    btnLogin.classList.add('hidden'); btnRegister.classList.add('hidden'); userMenu.classList.remove('hidden');
     userName.textContent = user.displayName || user.email;
     userAvatar.src = user.photoURL || `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(user.email)}`;
 
     try{
-      const docRef = doc(db, 'users', user.uid);
+      const docRef = doc(db,'users',user.uid);
       const docSnap = await getDoc(docRef);
-      state.user.level = docSnap.exists() ? docSnap.data().level || 'Basic' : 'Basic';
-    }catch(err){ console.error(err); state.user.level='Basic'; }
+      state.user.level = docSnap.exists()? docSnap.data().level || 'Basic' : 'Basic';
+    } catch { state.user.level='Basic'; }
 
     userLevelEl.textContent = state.user.level;
 
-    if(user.uid === 'o5wUtjhCLQho3H1zQE3FgZgu3Q93'){
-      adminBtn.classList.remove('hidden');
-      if(!adminBtn.dataset.listener){
-        adminBtn.addEventListener('click', () => window.location.href='admin.html');
-        adminBtn.dataset.listener="true";
-      }
-    } else adminBtn.classList.add('hidden');
-  } else {
-    btnLogin.classList.remove('hidden');
-    btnRegister.classList.remove('hidden');
-    userMenu.classList.add('hidden');
-    adminBtn.classList.add('hidden');
-    userLevelEl.textContent = 'Basic';
-  }
-
+    if(user.uid==='o5wUtjhCLQho3H1zQE3FgZgu3Q93' && adminBtn){ adminBtn.classList.remove('hidden'); if(!adminBtn.dataset.listener){ adminBtn.addEventListener('click',()=>window.location.href='admin.html'); adminBtn.dataset.listener='true'; } }
+    else if(adminBtn) adminBtn.classList.add('hidden');
+  } else { btnLogin.classList.remove('hidden'); btnRegister.classList.remove('hidden'); userMenu.classList.add('hidden'); if(adminBtn) adminBtn.classList.add('hidden'); userLevelEl.textContent='Basic'; }
   applyFilters();
 });
 
-// ===== Lightbox =====
-document.addEventListener('click', e => {
-  if(e.target.classList.contains('thumb')){
-    const src = e.target.src;
-    lightboxImg.src = src;
-    openModal(lightboxModal);
-  }
+// ================= Lightbox =================
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('thumb')){ lightboxImg.src=e.target.src; openModal(lightboxModal); }
 });
 
-// ===== Initialize =====
+// ================= Initialize =================
 applyFilters();
 
-// ===== Jigsaw Puzzle (Desktop + Mobile Touch) =====
+// ================= Jigsaw Puzzle =================
 document.addEventListener('DOMContentLoaded', () => {
+  const menuPuzzleBtn = $('#btn-puzzle'),
+        puzzleContainer = $('#puzzle-container'),
+        puzzle = $('#puzzle'),
+        message = $('#message'),
+        puzzleOverlay = $('#puzzle-overlay'),
+        puzzleCloseBtn = $('#puzzle-close'),
+        menuOptions = $('#menu-options');
 
-  // ===== Elements =====
-  const menuPuzzleBtn = document.getElementById('btn-puzzle');
-  const puzzleContainer = document.getElementById("puzzle-container");
-  const puzzle = document.getElementById("puzzle");
-  const message = document.getElementById("message");
-  const puzzleOverlay = document.getElementById("puzzle-overlay");
-  const puzzleCloseBtn = document.getElementById("puzzle-close");
-  const menuOptions = document.getElementById("menu-options");
+  const PUZZLE_IMG = "https://i.postimg.cc/8CsyBgL9/427265a82192.gif",
+        ROWS = 3,
+        COLS = 3,
+        PIECE_SIZE = 100;
 
-  const PUZZLE_IMG = "https://i.postimg.cc/8CsyBgL9/427265a82192.gif";
-  const ROWS = 3;
-  const COLS = 3;
-  const PIECE_SIZE = 100;
+  let dragged = null, touchDragged = null;
 
-  let dragged = null;
-  let touchDragged = null;
-
-  // ===== Open / Close Puzzle =====
-  function openPuzzle() {
-    puzzleOverlay.classList.remove("hidden");
-    puzzleContainer.classList.remove("hidden");
-    menuOptions.classList.add("hidden");
+  const openPuzzle = () => {
+    puzzleOverlay.classList.remove('hidden');
+    puzzleContainer.classList.remove('hidden');
+    menuOptions.classList.add('hidden');
     initPuzzle();
-  }
+  };
 
-  function closePuzzle() {
-    puzzleOverlay.classList.add("hidden");
-    puzzleContainer.classList.add("hidden");
+  const closePuzzle = () => {
+    puzzleOverlay.classList.add('hidden');
+    puzzleContainer.classList.add('hidden');
     puzzle.innerHTML = "";
     message.textContent = "";
-  }
+  };
 
-  // Events
-  menuPuzzleBtn.addEventListener("click", openPuzzle);
-  puzzleCloseBtn.addEventListener("click", closePuzzle);
+  menuPuzzleBtn.addEventListener('click', openPuzzle);
+  puzzleCloseBtn.addEventListener('click', closePuzzle);
+  puzzleOverlay.addEventListener('click', e => { if(e.target === puzzleOverlay) closePuzzle(); });
 
-  // คลิกรอบนอก overlay ปิด puzzle
-  puzzleOverlay.addEventListener("click", e => {
-     if(e.target === puzzleOverlay) closePuzzle();
-  });
+  $('#menu-toggle').addEventListener('click', () => menuOptions.classList.toggle('hidden'));
 
-  // ===== Menu Toggle =====
-  const menuToggle = document.getElementById('menu-toggle');
-  menuToggle.addEventListener("click", () => menuOptions.classList.toggle("hidden"));
-
-  // ===== Init Puzzle =====
-  function initPuzzle() {
+  const initPuzzle = () => {
     puzzle.innerHTML = "";
     const pieces = [];
 
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        const div = document.createElement("div");
-        div.classList.add("piece");
-        div.style.width = `${PIECE_SIZE}px`;
-        div.style.height = `${PIECE_SIZE}px`;
-        div.style.backgroundImage = `url(${PUZZLE_IMG})`;
-        div.style.backgroundSize = `${COLS*PIECE_SIZE}px ${ROWS*PIECE_SIZE}px`;
-        div.style.backgroundPosition = `-${c*PIECE_SIZE}px -${r*PIECE_SIZE}px`;
-        div.dataset.correct = r * COLS + c;
-        div.dataset.index = r * COLS + c;
+    for(let r=0; r<ROWS; r++){
+      for(let c=0; c<COLS; c++){
+        const div = document.createElement('div');
+        div.classList.add('piece');
+        Object.assign(div.style, {
+          width: `${PIECE_SIZE}px`,
+          height: `${PIECE_SIZE}px`,
+          backgroundImage: `url(${PUZZLE_IMG})`,
+          backgroundSize: `${COLS*PIECE_SIZE}px ${ROWS*PIECE_SIZE}px`,
+          backgroundPosition: `-${c*PIECE_SIZE}px -${r*PIECE_SIZE}px`
+        });
+        div.dataset.correct = r*COLS+c;
+        div.dataset.index = r*COLS+c;
         div.style.touchAction = "none";
         pieces.push(div);
       }
     }
 
     // สุ่มตำแหน่ง
-    pieces.sort(() => Math.random() - 0.5);
-    pieces.forEach((p, i) => { 
-      p.dataset.index = i; 
-      puzzle.appendChild(p); 
-    });
+    pieces.sort(() => Math.random()-0.5);
+    pieces.forEach((p,i)=> { p.dataset.index = i; puzzle.appendChild(p); });
 
-    // Desktop drag
     pieces.forEach(p => {
+      // Desktop
       p.draggable = true;
-      p.addEventListener("dragstart", e => dragged = p);
-      p.addEventListener("dragover", e => e.preventDefault());
-      p.addEventListener("drop", e => {
-        if(dragged && dragged !== p){
-          swapPieces(dragged, p);
-          checkPuzzleWin();
-        }
-      });
-    });
+      p.addEventListener('dragstart', e => dragged = p);
+      p.addEventListener('dragover', e => e.preventDefault());
+      p.addEventListener('drop', e => { if(dragged && dragged!==p){ swapPieces(dragged,p); checkPuzzleWin(); } });
 
-    // Mobile touch
-    pieces.forEach(p => {
-      p.addEventListener("touchstart", e => { touchDragged = e.target; });
-      p.addEventListener("touchmove", e => e.preventDefault());
-      p.addEventListener("touchend", e => {
+      // Mobile Touch
+      p.addEventListener('touchstart', e => touchDragged = e.target);
+      p.addEventListener('touchmove', e => e.preventDefault());
+      p.addEventListener('touchend', e => {
         if(!touchDragged) return;
         const touch = e.changedTouches[0];
         const target = document.elementFromPoint(touch.clientX, touch.clientY);
-        if(target && target.classList.contains("piece") && target !== touchDragged){
-          swapPieces(touchDragged, target);
+        if(target && target.classList.contains('piece') && target!==touchDragged){
+          swapPieces(touchDragged,target);
           checkPuzzleWin();
         }
         touchDragged = null;
       });
     });
-  }
+  };
 
-  // ===== Swap & Check =====
-  function swapPieces(a, b) {
-    const tempBg = a.style.backgroundPosition;
-    a.style.backgroundPosition = b.style.backgroundPosition;
-    b.style.backgroundPosition = tempBg;
+  const swapPieces = (a,b) => {
+    [a.style.backgroundPosition, b.style.backgroundPosition] = [b.style.backgroundPosition, a.style.backgroundPosition];
+    [a.dataset.index, b.dataset.index] = [b.dataset.index, a.dataset.index];
+  };
 
-    const tempIdx = a.dataset.index;
-    a.dataset.index = b.dataset.index;
-    b.dataset.index = tempIdx;
-  }
-
-  function checkPuzzleWin() {
-    const pieces = puzzle.querySelectorAll(".piece");
-    const won = [...pieces].every(p => p.dataset.index === p.dataset.correct);
+  const checkPuzzleWin = () => {
+    const pieces = [...puzzle.querySelectorAll('.piece')];
+    const won = pieces.every(p => Number(p.dataset.index) === Number(p.dataset.correct));
     message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
-  }
-
+  };
 });
 
+
+// ================= Disable Right Click =================
+document.addEventListener("contextmenu", e=>{ e.preventDefault(); alert("ห้ามคลิกขวา!"); });
