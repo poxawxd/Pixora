@@ -344,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // สุ่มตำแหน่ง
     pieces.sort(() => Math.random()-0.5);
     pieces.forEach((p,i)=> { p.dataset.index = i; puzzle.appendChild(p); });
 
@@ -361,15 +360,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Mobile touch
-      p.addEventListener('touchstart', e => touchStartPiece = e.target);
+      p.addEventListener('touchstart', e => touchStartPiece = e.target.closest('.piece'));
       p.addEventListener('touchmove', e => e.preventDefault());
       p.addEventListener('touchend', e => {
         if(!touchStartPiece) return;
         const touch = e.changedTouches[0];
         const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-        // หา parent piece ถ้า target เป็น child
         const targetPiece = targetEl.closest('.piece');
-        if(targetPiece && targetPiece!==touchStartPiece){
+        if(targetPiece && targetPiece !== touchStartPiece){
           swapPieces(touchStartPiece, targetPiece);
           checkPuzzleWin();
         }
@@ -379,8 +377,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const swapPieces = (a,b) => {
+    // สลับ background และ index
     [a.style.backgroundPosition, b.style.backgroundPosition] = [b.style.backgroundPosition, a.style.backgroundPosition];
-    [a.dataset.index, b.dataset.index] = [b.dataset.index, a.dataset.index];
+    const tmp = a.dataset.index;
+    a.dataset.index = b.dataset.index;
+    b.dataset.index = tmp;
   };
 
   const checkPuzzleWin = () => {
@@ -389,8 +390,6 @@ document.addEventListener('DOMContentLoaded', () => {
     message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
   };
 });
-
-
 
 // ================= Disable Right Click =================
 document.addEventListener("contextmenu", e=>{ e.preventDefault(); alert("ห้ามคลิกขวา!"); });
