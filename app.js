@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         COLS = 3,
         PIECE_SIZE = 100;
 
-  let dragged = null, touchDragged = null;
+  let dragged = null, touchStartPiece = null;
 
   const openPuzzle = () => {
     puzzleOverlay.classList.remove('hidden');
@@ -349,24 +349,31 @@ document.addEventListener('DOMContentLoaded', () => {
     pieces.forEach((p,i)=> { p.dataset.index = i; puzzle.appendChild(p); });
 
     pieces.forEach(p => {
-      // Desktop
+      // Desktop drag
       p.draggable = true;
       p.addEventListener('dragstart', e => dragged = p);
       p.addEventListener('dragover', e => e.preventDefault());
-      p.addEventListener('drop', e => { if(dragged && dragged!==p){ swapPieces(dragged,p); checkPuzzleWin(); } });
+      p.addEventListener('drop', e => { 
+        if(dragged && dragged!==p){ 
+          swapPieces(dragged,p); 
+          checkPuzzleWin(); 
+        } 
+      });
 
-      // Mobile Touch
-      p.addEventListener('touchstart', e => touchDragged = e.target);
+      // Mobile touch
+      p.addEventListener('touchstart', e => touchStartPiece = e.target);
       p.addEventListener('touchmove', e => e.preventDefault());
       p.addEventListener('touchend', e => {
-        if(!touchDragged) return;
+        if(!touchStartPiece) return;
         const touch = e.changedTouches[0];
-        const target = document.elementFromPoint(touch.clientX, touch.clientY);
-        if(target && target.classList.contains('piece') && target!==touchDragged){
-          swapPieces(touchDragged,target);
+        const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+        // หา parent piece ถ้า target เป็น child
+        const targetPiece = targetEl.closest('.piece');
+        if(targetPiece && targetPiece!==touchStartPiece){
+          swapPieces(touchStartPiece, targetPiece);
           checkPuzzleWin();
         }
-        touchDragged = null;
+        touchStartPiece = null;
       });
     });
   };
@@ -382,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
   };
 });
+
 
 
 // ================= Disable Right Click =================
