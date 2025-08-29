@@ -302,6 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let dragged = null, touchStartPiece = null;
 
+  // คำนวณตำแหน่ง background จาก tile id
+  const posFromId = (id) => {
+    const r = Math.floor(id / COLS);
+    const c = id % COLS;
+    return `-${c * PIECE_SIZE}px -${r * PIECE_SIZE}px`;
+  };
+
   const openPuzzle = () => {
     puzzleOverlay.classList.remove('hidden');
     puzzleContainer.classList.remove('hidden');
@@ -318,56 +325,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menuPuzzleBtn.addEventListener('click', openPuzzle);
   puzzleCloseBtn.addEventListener('click', closePuzzle);
-  puzzleOverlay.addEventListener('click', e => { if(e.target === puzzleOverlay) closePuzzle(); });
+  puzzleOverlay.addEventListener('click', e => { if (e.target === puzzleOverlay) closePuzzle(); });
 
   $('#menu-toggle').addEventListener('click', () => menuOptions.classList.toggle('hidden'));
 
   const initPuzzle = () => {
     puzzle.innerHTML = "";
-    const pieces = [];
+    const cells = [];
 
-    for(let r=0; r<ROWS; r++){
-      for(let c=0; c<COLS; c++){
-        const div = document.createElement('div');
-        div.classList.add('piece');
-        Object.assign(div.style, {
+    // สร้าง "ช่อง" แบบคงที่ (ไม่สลับ DOM) เพื่อให้ตรวจ win ได้ถูกต้อง
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = document.createElement('div');
+        cell.classList.add('piece');
+        Object.assign(cell.style, {
           width: `${PIECE_SIZE}px`,
           height: `${PIECE_SIZE}px`,
           backgroundImage: `url(${PUZZLE_IMG})`,
-          backgroundSize: `${COLS*PIECE_SIZE}px ${ROWS*PIECE_SIZE}px`,
-          backgroundPosition: `-${c*PIECE_SIZE}px -${r*PIECE_SIZE}px`
+          backgroundSize: `${COLS * PIECE_SIZE}px ${ROWS * PIECE_SIZE}px`,
+          touchAction: 'none'
         });
-        div.dataset.correct = r*COLS+c;
-        div.dataset.index = r*COLS+c;
-        div.style.touchAction = "none";
-        pieces.push(div);
+        // ตำแหน่งที่ "ถูกต้อง" สำหรับช่องนี้ (อิงตามลำดับ DOM)
+        cell.dataset.correct = r * COLS + c;
+        // จะกำหนด tile ปัจจุบัน (index) ทีหลังตอนสุ่ม
+        cell.dataset.index = cell.dataset.correct;
+        cells.push(cell);
+        puzzle.appendChild(cell);
       }
     }
 
-    pieces.sort(() => Math.random()-0.5);
-    pieces.forEach((p,i)=> { p.dataset.index = i; puzzle.appendChild(p); });
+    // สุ่ม tile ids แล้วใส่ลงในแต่ละช่อง
+    const tileIds = [...Array(ROWS * COLS).keys()].sort(() => Math.random() - 0.5);
+    cells.forEach((cell, i) => {
+      const id = tileIds[i];
+      cell.dataset.index = id;
+      cell.style.backgroundPosition = posFromId(id);
+    });
 
-    pieces.forEach(p => {
-      // Desktop drag
-      p.draggable = true;
-      p.addEventListener('dragstart', e => dragged = p);
-      p.addEventListener('dragover', e => e.preventDefault());
-      p.addEventListener('drop', e => { 
-        if(dragged && dragged!==p){ 
-          swapPieces(dragged,p); 
-          checkPuzzleWin(); 
-        } 
+    // Events ต่อช่อง
+    cells.forEach(cell => {
+      // Desktop Drag & Drop
+      cell.draggable = true;
+      cell.addEventListener('dragstart', () => dragged = cell);
+      cell.addEventListener('dragover', e => e.preventDefault());
+      cell.addEventListener('drop', () => {
+        if (dragged && dragged !== cell) {
+          swapPieces(dragged, cell);
+          checkPuzzleWin();
+        }
       });
 
-      // Mobile touch
-      p.addEventListener('touchstart', e => touchStartPiece = e.target.closest('.piece'));
-      p.addEventListener('touchmove', e => e.preventDefault());
-      p.addEventListener('touchend', e => {
-        if(!touchStartPiece) return;
-        const touch = e.changedTouches[0];
-        const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-        const targetPiece = targetEl.closest('.piece');
-        if(targetPiece && targetPiece !== touchStartPiece){
+      // Mobile Touch
+      cell.addEventListener('touchstart', e => {
+        touchStartPiece = e.target.closest('.piece');
+      }, { passive: true });
+
+      // ต้อง passive:false เพื่อให้ preventDefault มีผลบน iOS
+      cell.addEventListener('touchmove', e => {
+        e.preventDefault();
+      }, { passive: false });
+
+      cell.addEventListener('touchend', e => {
+        if (!touchStartPiece) return;
+        const t = e.changedTouches[0];
+        const targetEl = document.elementFromPoint(t.clientX, t.clientY);
+        const targetPiece = targetEl ? targetEl.closest('.piece') : null;
+        if (targetPiece && targetPiece !== touchStartPiece) {
           swapPieces(touchStartPiece, targetPiece);
           checkPuzzleWin();
         }
@@ -376,20 +399,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const swapPieces = (a,b) => {
-    // สลับ background และ index
-    [a.style.backgroundPosition, b.style.backgroundPosition] = [b.style.backgroundPosition, a.style.backgroundPosition];
-    const tmp = a.dataset.index;
+  // สลับ tile ระหว่าง "ช่อง" สองอัน (สลับเฉพาะ index และภาพ)
+  const swapPieces = (a, b) => {
+    const tmpIndex = a.dataset.index;
     a.dataset.index = b.dataset.index;
-    b.dataset.index = tmp;
+    b.dataset.index = tmpIndex;
+
+    a.style.backgroundPosition = posFromId(Number(a.dataset.index));
+    b.style.backgroundPosition = posFromId(Number(b.dataset.index));
   };
 
+  // ชนะเมื่อ tile id ในแต่ละช่อง ตรงกับตำแหน่งที่ถูกต้องของช่องนั้น
   const checkPuzzleWin = () => {
-    const pieces = [...puzzle.querySelectorAll('.piece')];
-    const won = pieces.every(p => Number(p.dataset.index) === Number(p.dataset.correct));
+    const cells = [...puzzle.querySelectorAll('.piece')];
+    const won = cells.every(cell => Number(cell.dataset.index) === Number(cell.dataset.correct));
     message.textContent = won ? "🎉 ถูกต้อง! คุณชนะแล้ว!" : "";
   };
 });
+
 
 // ================= Disable Right Click =================
 document.addEventListener("contextmenu", e=>{ e.preventDefault(); alert("ห้ามคลิกขวา!"); });
