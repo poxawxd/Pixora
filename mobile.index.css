@@ -1,7 +1,7 @@
 /* ===== Responsive Layouts for Pixora ===== */
 
 /* Tablet & Small Laptop */
-@media (max-width: 960px) {
+@media (max-width: 560px) {
   /* hero */
   .hero-grid {
     grid-template-columns: 1fr;
@@ -100,3 +100,4 @@
     max-width: 400px;
   }
 }
+

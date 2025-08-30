@@ -105,24 +105,28 @@ const render = products => {
     return false;
   });
 
-  filtered.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'card glass';
-    card.innerHTML = `
-      <span class="tag">${p.category}</span>
-      <div class="thumb-wrapper">
-        <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy"/>
-        <button class="btn detail-btn">ดูรายละเอียด</button>
+filtered.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'card glass';
+  card.innerHTML = `
+    <span class="tag">${p.category}</span>
+    <div class="thumb-wrapper">
+      <img class="thumb" src="${p.src}" alt="${p.title}" loading="lazy" />
+      <button class="btn detail-btn">ดูรายละเอียด</button>
+    </div>
+    <div class="meta">
+      <div>
+        <div class="title">${p.title}</div>
+        <div class="muted">฿${money(p.price)}</div>
       </div>
-      <div class="meta">
-        <div><div class="title">${p.title}</div><div class="muted">฿${money(p.price)}</div></div>
-        <div class="buttons">
-          <button class="btn primary" data-buy="${p.id}">สั่งซื้อเลย</button>
-          <button class="btn outline" data-add="${p.id}">เพิ่มลงตะกร้า</button>
-        </div>
-      </div>`;
-    grid.appendChild(card);
-
+      <div class="buttons">
+        <button class="btn primary" data-buy="${p.id}">สั่งซื้อเลย</button>
+        <button class="btn outline" data-add="${p.id}">เพิ่มลงตะกร้า</button>
+      </div>
+    </div>
+  `;
+  grid.appendChild(card);
+  
     card.querySelector('.detail-btn').addEventListener('click', () => showDetailModal(p));
   });
 };
@@ -275,11 +279,6 @@ onAuthStateChanged(auth, async user=>{
     else if(adminBtn) adminBtn.classList.add('hidden');
   } else { btnLogin.classList.remove('hidden'); btnRegister.classList.remove('hidden'); userMenu.classList.add('hidden'); if(adminBtn) adminBtn.classList.add('hidden'); userLevelEl.textContent='Basic'; }
   applyFilters();
-});
-
-// ================= Lightbox =================
-document.addEventListener('click', e=>{
-  if(e.target.classList.contains('thumb')){ lightboxImg.src=e.target.src; openModal(lightboxModal); }
 });
 
 // ================= Initialize =================

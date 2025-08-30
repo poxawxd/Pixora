@@ -529,3 +529,25 @@ select.input:focus { border: 1px solid var(--brand); background: rgba(124,92,255
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transform: translateY(-1px);
 }
+
+.thumb-wrapper {
+  position: relative;
+}
+
+.detail-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.detail-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
