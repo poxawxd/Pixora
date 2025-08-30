@@ -51,9 +51,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  perspective: 800px; /* สำหรับ tilt effect */
+  perspective: 800px;
 }
-
 .tilt-card {
   width: 90%;
   max-width: 300px;
@@ -64,7 +63,6 @@ body {
   transform: rotateX(0deg) rotateY(0deg);
   transition: transform 0.3s ease;
 }
-
 .tilt-card img {
   width: 100%;
   height: auto;
@@ -72,13 +70,9 @@ body {
   object-fit: cover;
   border-radius: 12px;
 }
-
-/* เพิ่ม tilt hover effect (ถ้าอยากได้) */
 .tilt-card:hover {
   transform: rotateX(3deg) rotateY(3deg);
 }
-
-/* Delay / Stagger cards */
 .tilt-card.delay-1 { transition-delay: 0.1s; }
 .tilt-card.delay-2 { transition-delay: 0.2s; }
 .tilt-card.delay-3 { transition-delay: 0.3s; }
@@ -117,22 +111,20 @@ body {
 
 /* ===== Modal Mobile Adjustments (<560px) ===== */
 .modal-card {
-  width: 90%;         /* ย่อ modal ให้เหลือ 90% ของจอ */
-  max-width: 320px;   /* จำกัดขนาดสูงสุด */
-  max-height: 80vh;   /* ไม่สูงเกินหน้าจอมือถือ */
+  width: 90%;
+  max-width: 320px;
+  max-height: 80vh;
   padding: 0.6rem;
-  overflow-y: auto;   /* Scroll เมื่อเนื้อหาเกิน */
+  overflow-y: auto;
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
 }
-
-/* Header / Title ของ Modal */
 .modal-card h3 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   text-align: center;
 }
-
-/* Form Input / Buttons */
 .modal-card .form label {
   font-size: 0.85rem;
 }
@@ -147,7 +139,7 @@ body {
 
 /* Cart Modal */
 .cart-items {
-  max-height: 50vh;   /* ไม่สูงเกินจอ */
+  max-height: 50vh;
   overflow-y: auto;
 }
 .cart-foot {
@@ -163,42 +155,34 @@ body {
   padding: 0.5rem 0;
 }
 
-/* Puzzle / Book Buttons */
+/* Puzzle & Book Buttons */
 #puzzle-container, #puzzle {
   max-width: 280px;
+  padding: 8px;
+}
+#puzzle {
+  grid-template-columns: repeat(3, 65px);
+  grid-template-rows: repeat(3, 65px);
+  gap: 4px;
 }
 .piece {
   width: 65px;
   height: 65px;
   background-size: 195px 195px;
 }
-
-/* ลดขนาดปุ่มปิด */
-.modal-card .close {
-  font-size: 18px;
-  top: 6px;
-  right: 6px;
-  padding: 4px 6px;
-}
-
-
-/* Puzzle & Book Button */
-#puzzle-container { max-width: 320px; padding: 8px; }
-#puzzle {
-  grid-template-columns: repeat(3, 70px);
-  grid-template-rows: repeat(3, 70px);
-  gap: 4px;
-}
-.piece {
-  width: 70px;
-  height: 70px;
-  background-size: 210px 210px;
-}
 #btn-book {
   bottom: 12px;
   right: 12px;
   padding: 8px 12px;
   font-size: 13px;
+}
+
+/* Reduce close button */
+.modal-card .close {
+  font-size: 18px;
+  top: 6px;
+  right: 6px;
+  padding: 4px 6px;
 }
 
 /* Menu Toggle & Options */
