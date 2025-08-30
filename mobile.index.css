@@ -160,20 +160,27 @@
     padding: 0.5rem 0;
   }
 
-  /* ===== Puzzle & Book Buttons ===== */
-  #puzzle-container, #puzzle {
-    max-width: 280px;
-    padding: 8px;
+  /* ===== Puzzle & Book Buttons (Responsive) ===== */
+  #puzzle-container {
+    width: 90vw;
+    max-width: 300px;
+    padding: 4px;
+    margin: 0 auto;
   }
   #puzzle {
-    grid-template-columns: repeat(3, 65px);
-    grid-template-rows: repeat(3, 65px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 4px;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* สี่เหลี่ยมจัตุรัส */
   }
   .piece {
-    width: 65px;
-    height: 65px;
-    background-size: 195px 195px;
+    width: 100%;
+    height: 0;
+    padding-top: 100%; /* ทำให้ tile เป็นสี่เหลี่ยมจัตุรัส */
+    background-size: 300% 300%; /* ปรับให้พอดีกับ 3x3 grid */
+    border-radius: 8px;
   }
   #btn-book {
     bottom: 12px;
