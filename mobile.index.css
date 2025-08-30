@@ -1,103 +1,131 @@
-/* ===== Responsive Layouts for Pixora ===== */
-
-/* Tablet & Small Laptop */
-@media (max-width: 560px) {
-  /* hero */
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-  .hero-copy {
-    order: 2;
-  }
-  .hero-art {
-    order: 1;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    height: auto;
-  }
-  .hero-art img {
-    max-width: 160px;
-    height: auto;
-  }
-
-  /* grid/gallery */
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  /* pricing cards */
-  .pricing {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  /* section heads */
-  .section-head {
-    text-align: center;
-  }
+/* ===== Base Overrides for Mobile (<560px) ===== */
+body {
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
-/* Mobile phones */
-@media (max-width: 560px) {
-  /* nav */
-  .nav-links {
-    display: none;
-  }
-  .auth {
-    gap: 0.5rem;
-  }
-
-  /* hero */
-  .hero-cta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-  .hero-cta .btn {
-    width: 100%;
-  }
-
-  .hero-art {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .hero-art img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* gallery grid full width */
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* filters stacked */
-  .filters {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .filters .input {
-    width: 100%;
-  }
-
-  /* footer */
-  .foot {
-    flex-direction: column;
-    gap: 0.8rem;
-    text-align: center;
-  }
-
-  /* modals full width */
-  .modal-card {
-    width: 95%;
-    max-width: 400px;
-  }
+/* Header / Nav */
+.nav {
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.nav-links {
+  display: none; /* ซ่อน navigation ปกติบนมือถือ */
+}
+.brand-logo {
+  width: 28px;
+  height: 28px;
+}
+.brand-name {
+  font-size: 1rem;
 }
 
+/* Hero */
+.hero-grid {
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.hero-art {
+  min-height: 200px;
+}
+.tilt-card {
+  width: 80%;
+  position: relative;
+  transform: none;
+}
+.tilt-card:nth-child(1),
+.tilt-card:nth-child(2),
+.tilt-card:nth-child(3) {
+  left: 0;
+  right: 0;
+  bottom: auto;
+  top: auto;
+  height: auto;
+  margin: 0 auto 8px;
+}
+
+/* Gallery */
+.grid {
+  grid-template-columns: 1fr; /* รูปเต็มความกว้างมือถือ */
+  gap: 0.6rem;
+}
+.input {
+  min-width: 0; /* ให้พอดีกับมือถือ */
+  width: 100%;
+}
+
+/* Pricing */
+.pricing {
+  grid-template-columns: 1fr; /* card เต็มความกว้าง */
+}
+.price-card {
+  min-height: auto;
+  padding: 0.8rem;
+}
+
+/* FAQ */
+.faq {
+  font-size: 0.9rem;
+}
+
+/* Footer */
+.foot {
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+/* Modal adjustments */
+.modal-card {
+  width: 90%;
+  padding: 0.8rem;
+}
+.cart-row {
+  grid-template-columns: 48px 1fr auto auto;
+  gap: 0.3rem;
+}
+.cart-row img {
+  width: 48px;
+  height: 36px;
+}
+
+/* Puzzle & Book Button */
+#puzzle-container, #puzzle {
+  width: 100%;
+  max-width: 300px;
+  grid-template-columns: repeat(3, 70px);
+  grid-template-rows: repeat(3, 70px);
+}
+.piece {
+  width: 70px;
+  height: 70px;
+  background-size: 210px 210px;
+}
+#btn-book {
+  bottom: 16px;
+  right: 16px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+/* Menu Toggle Button */
+#menu-toggle {
+  bottom: 16px;
+  right: 16px;
+  width: 45px;
+  height: 45px;
+  font-size: 20px;
+}
+
+/* Menu Options Box */
+#menu-options {
+  bottom: 65px;
+  right: 16px;
+  padding: 8px;
+  gap: 6px;
+}
+#menu-options button,
+#menu-options a {
+  padding: 6px 10px;
+  font-size: 12px;
+}
