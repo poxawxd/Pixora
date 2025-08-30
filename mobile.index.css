@@ -115,20 +115,72 @@ body {
   text-align: center;
 }
 
-/* Modal */
+/* ===== Modal Mobile Adjustments (<560px) ===== */
 .modal-card {
-  width: 95%;
-  max-width: 360px;
+  width: 90%;         /* ย่อ modal ให้เหลือ 90% ของจอ */
+  max-width: 320px;   /* จำกัดขนาดสูงสุด */
+  max-height: 80vh;   /* ไม่สูงเกินหน้าจอมือถือ */
   padding: 0.6rem;
+  overflow-y: auto;   /* Scroll เมื่อเนื้อหาเกิน */
+  border-radius: 12px;
 }
-.cart-row {
-  grid-template-columns: 48px 1fr auto auto;
-  gap: 0.3rem;
+
+/* Header / Title ของ Modal */
+.modal-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
-.cart-row img {
-  width: 48px;
-  height: 36px;
+
+/* Form Input / Buttons */
+.modal-card .form label {
+  font-size: 0.85rem;
 }
+.modal-card .form .input {
+  font-size: 0.85rem;
+  padding: 0.5rem;
+}
+.modal-card .form .btn.full {
+  font-size: 0.9rem;
+  padding: 0.6rem 0;
+}
+
+/* Cart Modal */
+.cart-items {
+  max-height: 50vh;   /* ไม่สูงเกินจอ */
+  overflow-y: auto;
+}
+.cart-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.cart-foot .cart-total {
+  font-size: 0.9rem;
+}
+.cart-foot .btn {
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
+
+/* Puzzle / Book Buttons */
+#puzzle-container, #puzzle {
+  max-width: 280px;
+}
+.piece {
+  width: 65px;
+  height: 65px;
+  background-size: 195px 195px;
+}
+
+/* ลดขนาดปุ่มปิด */
+.modal-card .close {
+  font-size: 18px;
+  top: 6px;
+  right: 6px;
+  padding: 4px 6px;
+}
+
 
 /* Puzzle & Book Button */
 #puzzle-container { max-width: 320px; padding: 8px; }
